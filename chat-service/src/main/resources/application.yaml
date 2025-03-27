@@ -1,0 +1,19 @@
+server:
+  port: 8990
+spring:
+  application:
+    name: chat-service
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/iam
+    username: postgres
+    password: postdb
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format-sql: true
+      show-sql: true
+
+

@@ -1,0 +1,23 @@
+server:
+  port: 8989
+spring:
+  application:
+    name: IAM
+  datasource:
+    url: jdbc:postgresql://localhost:5432/iam
+    username: postgres
+    password: postdb
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format-sql: true
+      show-sql: true
+  security:
+    authentication:
+      jwt:
+        jwt_refresh_expiration: 2592000000
+        secret: yPTyD4NJtTyXxf9v+Y9bPerZs6XtiCyD+fNdlB/lRmdq4UrpOK6brnicDMZXbgiq
+
