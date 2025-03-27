@@ -68,8 +68,8 @@ public class RoleService {
         return roleDTO;
     }
 
-    private List<PermissionDTO> enrichPermission(UUID roleId){
-        List<RolePermission> rolePermission =  rolePermissionRepository.findAllByRoleId(roleId);
+    private List<PermissionDTO> enrichPermission(UUID roleId) {
+        List<RolePermission> rolePermission = rolePermissionRepository.findAllByRoleId(roleId);
         List<UUID> permissionIds = rolePermission.stream().map(RolePermission::getPermissionId).toList();
         List<Permission> permissions = permissionRepository.findAllById(permissionIds);
         return permissionMapper.fromPermissions(permissions);

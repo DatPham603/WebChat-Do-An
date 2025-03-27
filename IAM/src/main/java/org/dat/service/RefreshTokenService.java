@@ -17,11 +17,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    @Value("${spring.security.authentication.jwt.jwt_refresh_expiration}")
-    private Long refreshTokenDuration;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final JwtTokenUtils jwtTokenUtils;
+    @Value("${spring.security.authentication.jwt.jwt_refresh_expiration}")
+    private Long refreshTokenDuration;
 
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByRefreshToken(token);

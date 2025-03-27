@@ -26,8 +26,8 @@ public class PermissionService {
 
 
     public PermissionDTO createOrUpdateRole(CreateOrUpdatePermissionRequest request) {
-        if(permissionRepository.existsByScopeAndResourceCode(request.getScope(),
-                                                             request.getResourceCode())){
+        if (permissionRepository.existsByScopeAndResourceCode(request.getScope(),
+                request.getResourceCode())) {
             throw new IllegalArgumentException("data existed");
         }
         Permission permission = permissionMapper.fromRequest(request);
@@ -49,7 +49,7 @@ public class PermissionService {
     }
 
     public List<PermissionDTO> getPermissionByRoleId(UUID roleId) {
-        List<RolePermission> rolePermission =  rolePermissionRepository.findAllByRoleId(roleId);
+        List<RolePermission> rolePermission = rolePermissionRepository.findAllByRoleId(roleId);
         List<UUID> permissionIds = rolePermission.stream().map(RolePermission::getPermissionId).toList();
         List<Permission> permissions = permissionRepository.findAllById(permissionIds);
         return permissionMapper.fromPermissions(permissions);

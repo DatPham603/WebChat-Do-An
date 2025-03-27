@@ -31,7 +31,7 @@ public class PermissionController {
     @GetMapping("/get-all-permission")
     public Response<Page<PermissionDTO>> getAllPermission(@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size) {
-        return Response.of(permissionService.getPermissions(page,size));
+        return Response.of(permissionService.getPermissions(page, size));
     }
 
     @GetMapping("/get-by-role/{roleId}")

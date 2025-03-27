@@ -48,7 +48,7 @@ public class UserController {
     @GetMapping("/get-all-users")
     public Response<Page<UserDTO>> getAllProducts(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size) {
-        return Response.of(userService.getAllUsers(page,size));
+        return Response.of(userService.getAllUsers(page, size));
     }
 
     @PutMapping("/update-users-infor/{userId}")

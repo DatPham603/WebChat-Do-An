@@ -22,7 +22,7 @@ public class RolePermissionService {
         Role role = roleRepository.findByCode(request.getCode())
                 .orElseThrow(() -> new RuntimeException("Not found role"));
         Permission permission = permissionRepository.findByResourceCodeAndScope(request.getResourceCode(),
-                                                                                request.getScope())
+                        request.getScope())
                 .orElseThrow(() -> new RuntimeException("Not found permission"));
         boolean check = rolePermissionRepository.findAllByRoleId(role.getId()).stream()
                 .anyMatch(rolePermission -> rolePermission.getPermissionId().equals(permission.getId()));

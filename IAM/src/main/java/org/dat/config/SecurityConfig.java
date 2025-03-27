@@ -41,9 +41,9 @@ public class SecurityConfig {
 //                        .requestMatchers(SWAGGER_ENDPOINT)
 //                        .permitAll()
                         .anyRequest().authenticated())
-                    .sessionManagement(session ->
-                            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //                    .httpBasic(withDefaults());
         return httpSecurity.build();
     }
@@ -64,6 +64,7 @@ public class SecurityConfig {
         expressionHandler.setPermissionEvaluator(customEvaluator());
         return expressionHandler;
     }
+
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();

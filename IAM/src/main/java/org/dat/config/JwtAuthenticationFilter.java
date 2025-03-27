@@ -25,11 +25,12 @@ import java.util.Arrays;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenUtils jwtTokenUtils;
     private final UserInforDetailService userDetailsService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        log.info("{}" ,request.getHeader("Authorization"));
+        log.info("{}", request.getHeader("Authorization"));
         String token = getJwtFromRequest(request);
 
         if (isPublicEndpoint(request)) {
@@ -37,24 +38,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if(jwtTokenUtils.isTokenValid(token)){
+        if (jwtTokenUtils.isTokenValid(token)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token invalid");
             return;
         }
 
-        if(token != null && !jwtTokenUtils.isTokenExpired(token)){
+        if (token != null && !jwtTokenUtils.isTokenExpired(token)) {
             String email = jwtTokenUtils.getSubFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
                     null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request){
+    private String getJwtFromRequest(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
-        if(token != null && token.startsWith("Bearer ")){
+        if (token != null && token.startsWith("Bearer ")) {
             return token.substring(7);
         }
         return null;

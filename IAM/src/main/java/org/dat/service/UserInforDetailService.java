@@ -44,7 +44,7 @@ public class UserInforDetailService implements UserDetailsService {
                 .map(RolePermission::getPermissionId)
                 .map(permissionId -> permissionRepository.findById(permissionId)
                         .map(permission ->
-                                        permission.getResourceCode() + "_" + permission.getScope())
+                                permission.getResourceCode() + "_" + permission.getScope())
                         .orElse("Unknow permission"))
                 .toList();
 
