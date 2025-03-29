@@ -1,11 +1,10 @@
 package org.dat.controller;
 
-
-import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.CreateRolePermissionRequest;
 import org.dat.dto.response.Response;
 import org.dat.entity.RolePermission;
 import org.dat.service.RolePermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

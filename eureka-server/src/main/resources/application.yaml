@@ -1,0 +1,9 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: eureka
+eureka:
+  client:
+    register-with-eureka: false #khong tu dang ky chinh no
+    fetch-registry: false # khong lay danh sach dich vu tu registry khac

@@ -1,15 +1,16 @@
 package org.dat.dto.response;
 
 
+import org.dat.enums.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.Getter;
-import lombok.Setter;
-import org.dat.enums.ErrorCode;
 
 import java.io.Serializable;
 import java.time.Instant;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @JsonInclude(Include.NON_NULL)
 @Getter

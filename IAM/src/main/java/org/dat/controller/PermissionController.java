@@ -1,10 +1,10 @@
 package org.dat.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.CreateOrUpdatePermissionRequest;
 import org.dat.dto.response.PermissionDTO;
 import org.dat.dto.response.Response;
 import org.dat.service.PermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +31,7 @@ public class PermissionController {
     @GetMapping("/get-all-permission")
     public Response<Page<PermissionDTO>> getAllPermission(@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size) {
-        return Response.of(permissionService.getPermissions(page, size));
+        return Response.of(permissionService.getPermissions(page,size));
     }
 
     @GetMapping("/get-by-role/{roleId}")

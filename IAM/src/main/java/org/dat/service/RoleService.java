@@ -1,6 +1,5 @@
 package org.dat.service;
 
-import lombok.AllArgsConstructor;
 import org.dat.dto.request.CreateOrUpdateRoleRequest;
 import org.dat.dto.response.PermissionDTO;
 import org.dat.dto.response.RoleDTO;
@@ -13,6 +12,7 @@ import org.dat.repository.PermissionRepository;
 import org.dat.repository.RolePermissionRepository;
 import org.dat.repository.RoleRepository;
 import org.dat.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -68,8 +68,8 @@ public class RoleService {
         return roleDTO;
     }
 
-    private List<PermissionDTO> enrichPermission(UUID roleId) {
-        List<RolePermission> rolePermission = rolePermissionRepository.findAllByRoleId(roleId);
+    private List<PermissionDTO> enrichPermission(UUID roleId){
+        List<RolePermission> rolePermission =  rolePermissionRepository.findAllByRoleId(roleId);
         List<UUID> permissionIds = rolePermission.stream().map(RolePermission::getPermissionId).toList();
         List<Permission> permissions = permissionRepository.findAllById(permissionIds);
         return permissionMapper.fromPermissions(permissions);

@@ -1,6 +1,5 @@
 package org.dat.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dat.config.JwtTokenUtils;
 import org.dat.dto.request.LoginRequest;
 import org.dat.dto.request.RefreshTokenRequest;
@@ -12,6 +11,7 @@ import org.dat.entity.*;
 import org.dat.enums.EnumRole;
 import org.dat.exception.UserExistedException;
 import org.dat.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.dat.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -222,7 +222,7 @@ public class UserService {
             accessToken = accessToken.substring(7).trim();
         }
         InvalidToken invalidToken = InvalidToken.builder()
-                .id(UUID.fromString(jwtTokenUtils.getJtiFromToken(accessToken)))
+                .id( UUID.fromString(jwtTokenUtils.getJtiFromToken(accessToken)))
                 .expiryTime(jwtTokenUtils.getExpirationTimeFromToken(accessToken))
                 .refreshTokenId(UUID.fromString(jwtTokenUtils.getJtiFromToken(refreshToken)))
                 .build();
@@ -253,12 +253,12 @@ public class UserService {
                 .toList();
     }
 
-    private List<String> enrichRole(UUID userId) {
+    private List<String> enrichRole(UUID userId){
         return roleUserRepository.findAllByUserId(userId).stream()
                 .map(RoleUser::getRoleId)
                 .map(roleId ->
                         roleRepository.findById(roleId).map(Role::getCode)
-                                .orElse("Unknow role")).toList();
+                        .orElse("Unknow role")).toList();
     }
 
 }

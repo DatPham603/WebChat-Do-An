@@ -1,14 +1,13 @@
 package org.dat.config;
 
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.dat.entity.RoleUser;
 import org.dat.entity.User;
 import org.dat.repository.InvalidTokenRepository;
 import org.dat.repository.RoleRepository;
 import org.dat.repository.RoleUserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +18,13 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenUtils {
-    private final RoleRepository roleRepository;
-    private final RoleUserRepository roleUserRepository;
-    private final InvalidTokenRepository invalidTokenRepository;
     @Value("${spring.security.authentication.jwt.secret}")
     private String secretKey;
     @Value("${spring.security.authentication.jwt.jwt_refresh_expiration}")
     private Long refreshTokenDuration;
+    private final RoleRepository roleRepository;
+    private final RoleUserRepository roleUserRepository;
+    private final InvalidTokenRepository invalidTokenRepository;
 
     public JwtTokenUtils(RoleRepository roleRepository,
                          RoleUserRepository roleUserRepository,
@@ -46,7 +45,7 @@ public class JwtTokenUtils {
         claims.put("exp", expirationDate);
         claims.put("scope", roleName);
         claims.put("jti", UUID.randomUUID().toString());
-        return Jwts.builder().claims(claims)
+        return  Jwts.builder().claims(claims)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -62,7 +61,7 @@ public class JwtTokenUtils {
         claims.put("exp", expirationDate);
         claims.put("scope", roleName);
         claims.put("jti", UUID.randomUUID().toString());
-        return Jwts.builder().claims(claims)
+        return  Jwts.builder().claims(claims)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

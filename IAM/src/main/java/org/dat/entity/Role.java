@@ -16,7 +16,7 @@ import java.util.UUID;
 @Table(name = "roles")
 @EntityListeners(AuditingEntityListener.class)
 @Builder
-public class Role extends Auditable {
+public class Role extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")

@@ -1,6 +1,5 @@
 package org.dat.mapper;
 
-
 import org.dat.dto.request.CreateOrUpdatePermissionRequest;
 import org.dat.dto.response.PermissionDTO;
 import org.dat.entity.Permission;

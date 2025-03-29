@@ -1,6 +1,5 @@
 package org.dat.config;
 
-
 import org.dat.entity.User;
 import org.dat.enums.EnumRole;
 import org.dat.repository.PermissionRepository;

@@ -1,12 +1,11 @@
 package org.dat.service;
 
-
-import lombok.RequiredArgsConstructor;
 import org.dat.entity.Role;
 import org.dat.entity.RolePermission;
 import org.dat.entity.RoleUser;
 import org.dat.entity.User;
 import org.dat.enums.EnumRole;
+import lombok.RequiredArgsConstructor;
 import org.dat.repository.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +43,7 @@ public class UserInforDetailService implements UserDetailsService {
                 .map(RolePermission::getPermissionId)
                 .map(permissionId -> permissionRepository.findById(permissionId)
                         .map(permission ->
-                                permission.getResourceCode() + "_" + permission.getScope())
+                                        permission.getResourceCode() + "_" + permission.getScope())
                         .orElse("Unknow permission"))
                 .toList();
 

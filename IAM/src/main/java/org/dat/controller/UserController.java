@@ -1,7 +1,5 @@
 package org.dat.controller;
 
-
-import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.LoginRequest;
 import org.dat.dto.request.RefreshTokenRequest;
 import org.dat.dto.request.RegisterRequest;
@@ -11,6 +9,7 @@ import org.dat.dto.response.Response;
 import org.dat.dto.response.UserDTO;
 import org.dat.exception.UserExistedException;
 import org.dat.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,7 +47,7 @@ public class UserController {
     @GetMapping("/get-all-users")
     public Response<Page<UserDTO>> getAllProducts(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size) {
-        return Response.of(userService.getAllUsers(page, size));
+        return Response.of(userService.getAllUsers(page,size));
     }
 
     @PutMapping("/update-users-infor/{userId}")

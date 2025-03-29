@@ -1,6 +1,5 @@
 package org.dat.mapper;
 
-
 import org.dat.dto.request.CreateOrUpdateRoleRequest;
 import org.dat.dto.response.RoleDTO;
 import org.dat.entity.Role;
