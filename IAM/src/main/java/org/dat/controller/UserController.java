@@ -1,20 +1,25 @@
 package org.dat.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.dat.dto.request.LoginRequest;
 import org.dat.dto.request.RefreshTokenRequest;
 import org.dat.dto.request.RegisterRequest;
 import org.dat.dto.request.UpdateUserInforRequest;
 import org.dat.dto.response.JwtDTO;
 import org.dat.dto.response.Response;
+import org.dat.dto.response.UserAuthDTO;
 import org.dat.dto.response.UserDTO;
 import org.dat.exception.UserExistedException;
 import org.dat.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +71,22 @@ public class UserController {
     public Response<Void> softDeleteUser(@PathVariable("userId") UUID userId) {
         this.userService.softDeleteUser(userId);
         return Response.ok();
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<UserAuthDTO> validateToken(@RequestParam String token) {
+        try {
+            UserAuthDTO userInfo = userService.validateToken(token);
+            return ResponseEntity.ok(userInfo);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .header("X-Token-Error", "expired")
+                    .build();
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .header("X-Token-Error", "invalid")
+                    .build();
+        }
     }
 
 }

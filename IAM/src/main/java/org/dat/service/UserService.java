@@ -6,6 +6,7 @@ import org.dat.dto.request.RefreshTokenRequest;
 import org.dat.dto.request.RegisterRequest;
 import org.dat.dto.request.UpdateUserInforRequest;
 import org.dat.dto.response.JwtDTO;
+import org.dat.dto.response.UserAuthDTO;
 import org.dat.dto.response.UserDTO;
 import org.dat.entity.*;
 import org.dat.enums.EnumRole;
@@ -253,12 +254,24 @@ public class UserService {
                 .toList();
     }
 
+    public UserAuthDTO validateToken(String token) {
+        boolean tokenInvalid = jwtTokenUtils.isTokenValid(token);
+        if (tokenInvalid) {
+            throw new RuntimeException("Invalid JWT");
+        }
+        UUID id = UUID.fromString(jwtTokenUtils.getJtiFromToken(token));
+        String email = jwtTokenUtils.getSubFromToken(token);
+        List<String> roles = jwtTokenUtils
+                .getClaimFromToken(token, claims -> claims.get("scope", List.class));
+        return new UserAuthDTO(id, email, roles);
+    }
+
     private List<String> enrichRole(UUID userId){
-        return roleUserRepository.findAllByUserId(userId).stream()
-                .map(RoleUser::getRoleId)
-                .map(roleId ->
-                        roleRepository.findById(roleId).map(Role::getCode)
-                        .orElse("Unknow role")).toList();
+            return roleUserRepository.findAllByUserId(userId).stream()
+                    .map(RoleUser::getRoleId)
+                    .map(roleId ->
+                            roleRepository.findById(roleId).map(Role::getCode)
+                            .orElse("Unknow role")).toList();
     }
 
 }

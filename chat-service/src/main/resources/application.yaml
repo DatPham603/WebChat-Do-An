@@ -1,10 +1,10 @@
 server:
-  port: 8990
+    port: 8990
 spring:
   application:
     name: chat-service
   datasource:
-#    url: jdbc:postgresql://localhost:5432/iam
+    url: jdbc:postgresql://localhost:5432/chat
     username: postgres
     password: postdb
     driver-class-name: org.postgresql.Driver

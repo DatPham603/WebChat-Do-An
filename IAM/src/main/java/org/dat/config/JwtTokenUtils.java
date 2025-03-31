@@ -1,5 +1,6 @@
 package org.dat.config;
 
+import org.dat.entity.Role;
 import org.dat.entity.RoleUser;
 import org.dat.entity.User;
 import org.dat.repository.InvalidTokenRepository;
@@ -35,15 +36,18 @@ public class JwtTokenUtils {
     }
 
     public String generateToken(User user) {
-        RoleUser roleUser = roleUserRepository.findByUserId(user.getId());
-        String roleName = roleRepository.findById(roleUser.getRoleId()).get().getCode();
+        List<String> roleNames = roleUserRepository.findAllByUserId(user.getId()).stream()
+                .map(RoleUser::getRoleId)
+                .map(roleId ->
+                        roleRepository.findById(roleId).map(Role::getCode)
+                                .orElse("Unknow role")).toList();
         long currentTimeMillis = System.currentTimeMillis();
         Date expirationDate = new Date(currentTimeMillis + 86400000);
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         claims.put("sub", user.getEmail());
         claims.put("exp", expirationDate);
-        claims.put("scope", roleName);
+        claims.put("scope", roleNames);
         claims.put("jti", UUID.randomUUID().toString());
         return  Jwts.builder().claims(claims)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -51,15 +55,18 @@ public class JwtTokenUtils {
     }
 
     public String generaRefreshToken(User user) {
-        RoleUser roleUser = roleUserRepository.findByUserId(user.getId());
-        String roleName = roleRepository.findById(roleUser.getRoleId()).get().getCode();
+        List<String> roleNames = roleUserRepository.findAllByUserId(user.getId()).stream()
+                .map(RoleUser::getRoleId)
+                .map(roleId ->
+                        roleRepository.findById(roleId).map(Role::getCode)
+                                .orElse("Unknow role")).toList();
         long currentTimeMillis = System.currentTimeMillis();
         Date expirationDate = new Date(currentTimeMillis + refreshTokenDuration);
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         claims.put("sub", user.getEmail());
         claims.put("exp", expirationDate);
-        claims.put("scope", roleName);
+        claims.put("scope", roleNames);
         claims.put("jti", UUID.randomUUID().toString());
         return  Jwts.builder().claims(claims)
                 .signWith(SignatureAlgorithm.HS256, secretKey)

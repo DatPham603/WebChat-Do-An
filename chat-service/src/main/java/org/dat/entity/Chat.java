@@ -15,15 +15,20 @@ import java.util.UUID;
 @Table(name = "chat")
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Chat {
+public class Chat extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
+    @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
     private MessegeType type;
     @Column(name = "content")
     private String content;
+    @Column(name = "sender_id")
+    private UUID senderId;
     @Column(name = "sender")
-    private String sender;
+    private String senderName;
+    @Column(name = "receiver_id")
+    private UUID receiverId;
 }

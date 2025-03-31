@@ -4,6 +4,32 @@ server:
 spring:
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 5000
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: chat-service
+          uri: ws://CHAT-SERVICE
+          predicates:
+            - Path=/ws-chat/**
+          filters:
+            - name: JwtAuthenticationFilter
+              args:
+                excludePaths:
+                  - /api/auth/login
+                  - /api/auth/register
+                  - /actuator/health
+        - id: iam-service
+          uri: lb://IAM
+          predicates:
+            - Path=/api/v1/users/**
+
 eureka:
   client:
     service-url:

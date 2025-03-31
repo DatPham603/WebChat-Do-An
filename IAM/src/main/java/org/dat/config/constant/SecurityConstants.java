@@ -10,6 +10,7 @@ public class SecurityConstants {
             "/api/v1/users/confirm-login-email",
             "/api/v1/users/uploads/**",
             "/api/v1/users/refresh-token/**",
-            "/api/v1/users/logout/**"
+            "/api/v1/users/logout/**",
+            "/api/v1/users/validate/**"
     };
 }

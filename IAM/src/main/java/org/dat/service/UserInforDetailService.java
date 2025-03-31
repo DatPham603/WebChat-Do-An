@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,35 +31,58 @@ public class UserInforDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        RoleUser roleUser = roleUserRepository.findByUserId(user.getId());
-        Role role = roleRepository.findById(roleUser.getRoleId())
-                .orElseThrow(() -> new UsernameNotFoundException("role not found"));
+        // Lấy tất cả các vai trò của user
+        List<RoleUser> roleUsers = roleUserRepository.findAllByUserId(user.getId());
+        if (roleUsers.isEmpty()) {
+            throw new RuntimeException("User has no roles assigned");
+        }
 
-        String roleName = roleRepository.findById(roleUser.getRoleId()).map(Role::getCode)
-                .orElseThrow(() -> new RuntimeException("role not found"));
-
-        List<String> permissions = rolePermissionRepository.findAllByRoleId(roleUser.getRoleId())
-                .stream()
-                .map(RolePermission::getPermissionId)
-                .map(permissionId -> permissionRepository.findById(permissionId)
-                        .map(permission ->
-                                        permission.getResourceCode() + "_" + permission.getScope())
-                        .orElse("Unknow permission"))
+        // Lấy danh sách role
+        List<Role> roles = roleUsers.stream()
+                .map(roleUser -> roleRepository.findById(roleUser.getRoleId())
+                        .orElseThrow(() -> new RuntimeException("Can't find role with ID: " + roleUser.getRoleId())))
                 .toList();
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String permission : permissions) {
-            authorities.add(new SimpleGrantedAuthority(permission));
+        // Lấy danh sách quyền từ các role
+        Set<String> permissions = new HashSet<>();
+        boolean isAdmin = false;
+
+        for (Role role : roles) {
+            List<String> rolePermissions = rolePermissionRepository.findAllByRoleId(role.getId())
+                    .stream()
+                    .map(RolePermission::getPermissionId)
+                    .map(permissionId -> permissionRepository.findById(permissionId)
+                            .map(permission -> permission.getResourceCode() + "_" + permission.getScope())
+                            .orElse("Unknown permission"))
+                    .toList();
+
+            permissions.addAll(rolePermissions);
+
+            // Nếu có ít nhất 1 role là Admin, đánh dấu user là Admin
+            if (Boolean.TRUE.equals(role.getIsAdmin())) {
+                isAdmin = true;
+            }
         }
-        if (role.getIsAdmin()) {
+
+        // Chuyển đổi danh sách quyền sang GrantedAuthority
+        List<GrantedAuthority> authorities = new ArrayList<>(
+                permissions.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList()
+        );
+
+        // Nếu user có role admin, thêm quyền ADMIN
+        if (isAdmin) {
             authorities.add(new SimpleGrantedAuthority(EnumRole.ADMIN.name()));
         }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
                 authorities
         );
     }
+
 }
