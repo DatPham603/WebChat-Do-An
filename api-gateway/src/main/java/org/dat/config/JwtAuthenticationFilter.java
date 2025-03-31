@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             // Bỏ qua các endpoint không cần auth
-            if (config.getExcludePaths().contains(exchange.getRequest().getPath().toString())) {
+            if (config.getExcludePaths().contains(exchange.getRequest().getPath().value())) {
                 return chain.filter(exchange);
             }
 
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                     .onStatus(HttpStatusCode::isError,
                             response -> {
                                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                                return Mono.error(new RuntimeException("Token validation failed"));
+                                return Mono.error(new TokenValidationException("Token validation failed")); // Sử dụng TokenValidationException
                             })
                     .bodyToMono(UserInfo.class)
                     .flatMap(userInfo -> {
@@ -60,17 +60,19 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                                 .header("X-User-Name", userInfo.getUsername())
                                 .header("X-User-Roles", String.join(",", userInfo.getRoles()))
                                 .build();
-
+                        log.info("userId = {}", userInfo.getId());
+                        log.info("username = {}", userInfo.getUsername());
+                        log.info("roles = {}", userInfo.getRoles());
                         return chain.filter(exchange.mutate().request(modifiedRequest).build());
                     })
+                    .onErrorResume(TokenValidationException.class, e -> {
+                        log.info(e.getMessage());
+                        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                        return exchange.getResponse().setComplete();
+                    })
                     .onErrorResume(e -> {
-                        if (e instanceof TokenValidationException) {
-                            log.info(e.getMessage());
-                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                        } else {
-                            log.info(e.getMessage());
-                            exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-                        }
+                        log.error("Error validating token", e);
+                        exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
                         return exchange.getResponse().setComplete();
                     });
         };

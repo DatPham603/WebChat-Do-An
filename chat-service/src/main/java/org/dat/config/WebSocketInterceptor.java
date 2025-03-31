@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -14,19 +15,19 @@ import java.util.Map;
 @Component
 public class WebSocketInterceptor implements HandshakeInterceptor {
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                   WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        HttpHeaders headers = request.getHeaders();
-        String userId = headers.getFirst("X-User-Id");
-        String username = headers.getFirst("X-User-Name");
-        //log test
-        if (userId == null || username == null) {
-            return false;
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+        if (request instanceof ServletServerHttpRequest) {
+            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+            String userId = servletRequest.getServletRequest().getHeader("X-User-Id");
+            log.info("Headers: {}", servletRequest.getServletRequest().getHeaderNames());
+            log.info("userId = {}", userId);
+            if (userId != null) {
+                attributes.put("userId", userId);
+                return true;
+            }
         }
-        log.info(userId + ":" + username);
-        attributes.put("userId", userId);
-        attributes.put("username", username);
-        return true;
+        log.info("before handshake");
+        return false;
     }
 
     @Override

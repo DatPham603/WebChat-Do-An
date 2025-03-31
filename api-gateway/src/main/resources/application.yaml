@@ -29,6 +29,25 @@ spring:
           uri: lb://IAM
           predicates:
             - Path=/api/v1/users/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+#            allowedOrigins:
+#              - "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "authorization"
+              - "content-type"
+              - "X-Requested-With"
+              - "Access-Control-Allow-Origin"
+              - "Access-Control-Allow-Credentials"
+              - "Access-Control-Allow-Headers"
+            allowCredentials: true
 
 eureka:
   client:
