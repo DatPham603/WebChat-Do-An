@@ -13,7 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final WebSocketInterceptor webSocketInterceptor;
+    private final TokenHandshakeInterceptor webSocketInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
