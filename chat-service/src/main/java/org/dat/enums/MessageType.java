@@ -1,5 +1,5 @@
 package org.dat.enums;
 
-    public enum MessegeType {
+    public enum MessageType {
         CHAT, JOIN, LEAVE
     }

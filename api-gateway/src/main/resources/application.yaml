@@ -1,7 +1,9 @@
 server:
-  port: 8080
+  port: 8095
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: api-gateway
   cloud:
@@ -14,17 +16,19 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: chat-service
-          uri: ws://CHAT-SERVICE
-          predicates:
-            - Path=/ws-chat/**
-          filters:
-            - name: JwtAuthenticationFilter
-              args:
-                excludePaths:
-                  - /api/auth/login
-                  - /api/auth/register
-                  - /actuator/health
+#        - id: chat-service
+#          uri: ws://CHAT-SERVICE
+#          predicates:
+#            - Path=/ws-chat/**
+#          filters:
+#            - name: JwtAuthenticationFilter
+#              args:
+#                excludePaths:
+#                  - /api/auth/login
+#                  - /api/auth/register
+#                  - /actuator/health
+#          filters:
+#            - RemoveRequestHeader=Sec-WebSocket-Protocol
         - id: iam-service
           uri: lb://IAM
           predicates:

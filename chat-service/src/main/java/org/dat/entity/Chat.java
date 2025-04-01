@@ -2,7 +2,7 @@ package org.dat.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.dat.enums.MessegeType;
+import org.dat.enums.MessageType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class Chat extends Auditable{
     private UUID id;
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
-    private MessegeType type;
+    private MessageType type;
     @Column(name = "content")
     private String content;
     @Column(name = "sender_id")
