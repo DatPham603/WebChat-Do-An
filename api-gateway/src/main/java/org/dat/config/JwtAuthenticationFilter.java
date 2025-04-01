@@ -33,16 +33,20 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                 return chain.filter(exchange);
             }
 
-            // Lấy JWT từ header
+            // Lấy JWT từ header hoặc query parameter
             String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            String token = null;
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            } else {
+                token = exchange.getRequest().getQueryParams().getFirst("token");
+            }
+
+            if (token == null) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
 
-            String token = authHeader.substring(7);
-
-            // Gọi IAM service để validate token
             return webClientBuilder.build()
                     .get()
                     .uri("http://IAM/api/v1/users/validate?token={token}", token)
@@ -50,7 +54,12 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                     .onStatus(HttpStatusCode::isError,
                             response -> {
                                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                                return Mono.error(new TokenValidationException("Token validation failed")); // Sử dụng TokenValidationException
+                                return Mono.error(new TokenValidationException("Token validation failed"));
+                            })
+                    .onStatus(HttpStatusCode::is5xxServerError,
+                            response -> {
+                                exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                                return Mono.error(new RuntimeException("IAM service error"));
                             })
                     .bodyToMono(UserInfo.class)
                     .flatMap(userInfo -> {
@@ -77,7 +86,6 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                     });
         };
     }
-
 
     // Custom exception
     private static class TokenValidationException extends RuntimeException {

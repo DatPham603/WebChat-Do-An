@@ -32,8 +32,8 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-#            allowedOrigins:
-#              - "*"
+            allowedOrigins:
+              - "*"
             allowedMethods:
               - GET
               - POST
@@ -47,8 +47,7 @@ spring:
               - "Access-Control-Allow-Origin"
               - "Access-Control-Allow-Credentials"
               - "Access-Control-Allow-Headers"
-            allowCredentials: true
-
+#            allowCredentials: true
 eureka:
   client:
     service-url:
