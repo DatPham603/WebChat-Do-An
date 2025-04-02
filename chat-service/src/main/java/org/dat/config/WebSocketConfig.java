@@ -28,7 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         log.info("Registering Stomp Endpoints");
-        registry.addEndpoint("/ws-chat")
+        registry.addEndpoint("/ws-chat") // đ/nghĩa những endpoint mà client sử dụng để gọi và kết nối tới WebSocket.
                 .setAllowedOriginPatterns("*") //Thay bằng origin của client
                 .addInterceptors(webSocketInterceptor);
 //                .withSockJS();

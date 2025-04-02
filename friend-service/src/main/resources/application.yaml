@@ -1,10 +1,10 @@
 server:
-    port: 8990
+  port: 8010
 spring:
   application:
-    name: chat-service
+    name: friend-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/chat
+    url: jdbc:postgresql://localhost:5432/friend
     username: postgres
     password: postdb
     driver-class-name: org.postgresql.Driver
@@ -15,13 +15,9 @@ spring:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       format-sql: true
       show-sql: true
-  authentication:
-    jwt:
-      secret: yPTyD4NJtTyXxf9v+Y9bPerZs6XtiCyD+fNdlB/lRmdq4UrpOK6brnicDMZXbgiq
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
-

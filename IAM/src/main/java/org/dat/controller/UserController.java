@@ -39,9 +39,14 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasPermission('Document','DELETE')")
+//    @PreAuthorize("hasPermission('Document','DELETE')")
     public Response<UserDTO> getUserById(@PathVariable("userId") UUID userId) {
         return Response.of(userService.getUserInfor(userId));
+    }
+
+    @GetMapping("find-by-email/{email}")
+    public Response<UserDTO> getUserByEmail(@PathVariable("email") String email) {
+        return Response.of(userService.getUserInforbyEmail(email));
     }
 
     @PostMapping("/refresh-token")

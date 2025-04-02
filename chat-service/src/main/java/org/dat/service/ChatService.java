@@ -4,9 +4,6 @@ import org.dat.entity.Chat;
 import org.dat.repository.ChatRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
-
 @Service
 public class ChatService {
     private final ChatRepository chatRepository;

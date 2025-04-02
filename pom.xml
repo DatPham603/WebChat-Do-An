@@ -26,6 +26,7 @@
         <module>chat-service</module>
         <module>eureka-server</module>
         <module>api-gateway</module>
+        <module>friend-service</module>
     </modules>
     <scm>
         <connection/>
