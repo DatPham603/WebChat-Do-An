@@ -37,7 +37,7 @@ public class ChatController {
         messagingTemplate.convertAndSendToUser(receiverId, "/queue/messages", savedChat);
 
         // Gửi tin nhắn đến queue của người gửi để hiển thị tin nhắn đã gửi
-        messagingTemplate.convertAndSendToUser(senderUserId, "/queue/messages", savedChat);
+        messagingTemplate.convertAndSendToUser(senderEmail, "/queue/messages", savedChat);
 
         // Sử dụng thông tin người gửi nếu cần
         System.out.println("Message from " + senderUsername + " (" + senderEmail + ")");

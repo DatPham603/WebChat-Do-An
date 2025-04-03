@@ -92,7 +92,18 @@ public class FriendService {
                 .friendName(friend.getFriendName())
                 .userId(friend.getUserId())
                 .build()).toList();
+    }
 
+    public List<FriendDTO> getFriendByUserMail(String mail) {
+        Response<UserDTO> user = iamServiceClient.getUserInforbyEmail(mail);
+
+        List<Friend> friends = friendRepository.findFriendByUserId(user.getData().getId());
+
+        return friends.stream().map(friend -> FriendDTO.builder()
+                .friendId(friend.getFriendId())
+                .friendName(friend.getFriendName())
+                .userId(friend.getUserId())
+                .build()).toList();
     }
 
     // API để cập nhật tên người dùng trong bảng Friend

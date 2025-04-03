@@ -41,7 +41,7 @@ spring:
 #        corsConfigurations:
 #          '[/**]':
 #            allowedOrigins:
-#              - "*"
+#              - "http://127.0.0.1:5500"
 #            allowedMethods:
 #              - GET
 #              - POST
@@ -55,6 +55,7 @@ spring:
 #              - "Access-Control-Allow-Origin"
 #              - "Access-Control-Allow-Credentials"
 #              - "Access-Control-Allow-Headers"
+#              - "*"
 #            allowCredentials: true
 eureka:
   client:

@@ -94,6 +94,7 @@ public class UserService {
                 .build());
 
         return UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -164,6 +165,7 @@ public class UserService {
         );
 
         return UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -194,6 +196,7 @@ public class UserService {
         );
 
         return UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -224,6 +227,7 @@ public class UserService {
         );
 
         return UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -254,6 +258,7 @@ public class UserService {
         }
         userRepository.save(existingUser);
         return UserDTO.builder()
+                .id(userId)
                 .userName(existingUser.getUsername())
                 .email(existingUser.getEmail())
                 .address(existingUser.getAddress())
@@ -271,6 +276,7 @@ public class UserService {
     public Page<UserDTO> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable).map(user -> UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
