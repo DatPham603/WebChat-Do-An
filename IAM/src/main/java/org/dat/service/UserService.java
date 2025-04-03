@@ -1,17 +1,18 @@
 package org.dat.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dat.config.JwtTokenUtils;
 import org.dat.dto.request.LoginRequest;
 import org.dat.dto.request.RefreshTokenRequest;
 import org.dat.dto.request.RegisterRequest;
 import org.dat.dto.request.UpdateUserInforRequest;
 import org.dat.dto.response.JwtDTO;
+import org.dat.dto.response.UserAuthDTO;
 import org.dat.dto.response.UserDTO;
 import org.dat.entity.*;
 import org.dat.enums.EnumRole;
 import org.dat.exception.UserExistedException;
 import org.dat.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.dat.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -93,6 +94,7 @@ public class UserService {
                 .build());
 
         return UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -163,6 +165,69 @@ public class UserService {
         );
 
         return UserDTO.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .dateOfBirth(user.getDateOfBirth())
+                .roleName(roleNames)
+                .perDescription(permissionDescriptions)
+                .build();
+    }
+
+    public UserDTO getUserInfor(String userName) {
+        User user = userRepository.findUserByUserName(userName).orElseThrow(() ->
+                new RuntimeException("User not found"));
+
+        List<RoleUser> roleUsers = roleUserRepository.findAllByUserId(user.getId());
+        if (roleUsers.isEmpty()) {
+            throw new RuntimeException("User has no roles assigned");
+        }
+        List<Role> roles = roleUsers.stream()
+                .map(roleUser -> roleRepository.findById(roleUser.getRoleId())
+                        .orElseThrow(() -> new RuntimeException("Can't find role")))
+                .toList();
+        List<String> roleNames = roles.stream()
+                .map(Role::getCode)
+                .toList();
+
+        List<String> permissionDescriptions = enrichPermissions(
+                roles.stream().map(Role::getId).toList()
+        );
+
+        return UserDTO.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .dateOfBirth(user.getDateOfBirth())
+                .roleName(roleNames)
+                .perDescription(permissionDescriptions)
+                .build();
+    }
+
+    public UserDTO getUserInforbyEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("User not found"));
+
+        List<RoleUser> roleUsers = roleUserRepository.findAllByUserId(user.getId());
+        if (roleUsers.isEmpty()) {
+            throw new RuntimeException("User has no roles assigned");
+        }
+        List<Role> roles = roleUsers.stream()
+                .map(roleUser -> roleRepository.findById(roleUser.getRoleId())
+                        .orElseThrow(() -> new RuntimeException("Can't find role")))
+                .toList();
+        List<String> roleNames = roles.stream()
+                .map(Role::getCode)
+                .toList();
+
+        List<String> permissionDescriptions = enrichPermissions(
+                roles.stream().map(Role::getId).toList()
+        );
+
+        return UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -193,6 +258,7 @@ public class UserService {
         }
         userRepository.save(existingUser);
         return UserDTO.builder()
+                .id(userId)
                 .userName(existingUser.getUsername())
                 .email(existingUser.getEmail())
                 .address(existingUser.getAddress())
@@ -210,6 +276,7 @@ public class UserService {
     public Page<UserDTO> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable).map(user -> UserDTO.builder()
+                .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
@@ -253,12 +320,24 @@ public class UserService {
                 .toList();
     }
 
+    public UserAuthDTO validateToken(String token) {
+        boolean tokenInvalid = jwtTokenUtils.isTokenValid(token);
+        if (tokenInvalid) {
+            throw new RuntimeException("Invalid JWT");
+        }
+        UUID id = UUID.fromString(jwtTokenUtils.getJtiFromToken(token));
+        String email = jwtTokenUtils.getSubFromToken(token);
+        List<String> roles = jwtTokenUtils
+                .getClaimFromToken(token, claims -> claims.get("scope", List.class));
+        return new UserAuthDTO(id, email, roles);
+    }
+
     private List<String> enrichRole(UUID userId){
-        return roleUserRepository.findAllByUserId(userId).stream()
-                .map(RoleUser::getRoleId)
-                .map(roleId ->
-                        roleRepository.findById(roleId).map(Role::getCode)
-                        .orElse("Unknow role")).toList();
+            return roleUserRepository.findAllByUserId(userId).stream()
+                    .map(RoleUser::getRoleId)
+                    .map(roleId ->
+                            roleRepository.findById(roleId).map(Role::getCode)
+                            .orElse("Unknow role")).toList();
     }
 
 }

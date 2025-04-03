@@ -1,7 +1,5 @@
 package org.dat.service;
 
-
-import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.CreateRolePermissionRequest;
 import org.dat.entity.Permission;
 import org.dat.entity.Role;
@@ -9,6 +7,7 @@ import org.dat.entity.RolePermission;
 import org.dat.repository.PermissionRepository;
 import org.dat.repository.RolePermissionRepository;
 import org.dat.repository.RoleRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service

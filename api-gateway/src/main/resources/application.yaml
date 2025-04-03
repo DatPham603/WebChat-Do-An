@@ -1,0 +1,71 @@
+server:
+  port: 8095
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 5000
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+#        - id: chat-service
+#          uri: ws://CHAT-SERVICE
+#          predicates:
+#            - Path=/ws-chat/**
+#          filters:
+#            - name: JwtAuthenticationFilter
+#              args:
+#                excludePaths:
+#                  - /api/auth/login
+#                  - /api/auth/register
+#                  - /actuator/health
+#          filters:
+#            - RemoveRequestHeader=Sec-WebSocket-Protocol
+        - id: iam-service
+          uri: lb://IAM
+          predicates:
+            - Path=/api/v1/users/**
+        - id: friend-service
+          uri: lb://FRIEND-SERVICE
+          predicates:
+            - Path=/api/v1/friends/**
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins:
+#              - "http://127.0.0.1:5500"
+#            allowedMethods:
+#              - GET
+#              - POST
+#              - PUT
+#              - DELETE
+#              - OPTIONS
+#            allowedHeaders:
+#              - "authorization"
+#              - "content-type"
+#              - "X-Requested-With"
+#              - "Access-Control-Allow-Origin"
+#              - "Access-Control-Allow-Credentials"
+#              - "Access-Control-Allow-Headers"
+#              - "*"
+#            allowCredentials: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+

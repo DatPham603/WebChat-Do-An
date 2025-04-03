@@ -1,10 +1,10 @@
 package org.dat.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.CreateOrUpdatePermissionRequest;
 import org.dat.dto.response.PermissionDTO;
 import org.dat.dto.response.Response;
 import org.dat.service.PermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 

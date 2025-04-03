@@ -1,0 +1,23 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: friend-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/friend
+    username: postgres
+    password: postdb
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format-sql: true
+      show-sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true

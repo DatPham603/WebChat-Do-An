@@ -1,7 +1,5 @@
 package org.dat.service;
 
-
-import lombok.AllArgsConstructor;
 import org.dat.dto.request.CreateRoleUserRequest;
 import org.dat.entity.Role;
 import org.dat.entity.RoleUser;
@@ -9,6 +7,7 @@ import org.dat.entity.User;
 import org.dat.repository.RoleRepository;
 import org.dat.repository.RoleUserRepository;
 import org.dat.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

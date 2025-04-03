@@ -1,7 +1,5 @@
 package org.dat.service;
 
-
-import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.CreateOrUpdatePermissionRequest;
 import org.dat.dto.response.PermissionDTO;
 import org.dat.entity.Permission;
@@ -9,6 +7,7 @@ import org.dat.entity.RolePermission;
 import org.dat.mapper.PermissionMapper;
 import org.dat.repository.PermissionRepository;
 import org.dat.repository.RolePermissionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
