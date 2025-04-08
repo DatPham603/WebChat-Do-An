@@ -29,8 +29,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         log.info("Registering Stomp Endpoints");
         registry.addEndpoint("/ws-chat") // đ/nghĩa những endpoint mà client sử dụng để gọi và kết nối tới WebSocket.
-                .setAllowedOriginPatterns("http://127.0.0.1:5500") //Thay bằng origin của client
+                .setAllowedOriginPatterns("http://localhost:4200") //Thay bằng origin của client
                 .addInterceptors(webSocketInterceptor)
+                .setHandshakeHandler(new CustomHandshakeHandler())
                 .withSockJS();
     }
 

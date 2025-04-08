@@ -14,7 +14,7 @@ public class RouteLocatorConfiguration {
                 .route("chat-service", p -> p
                         .path("/ws-chat/**")
                         .filters(f -> f
-                                .removeRequestHeader("Sec-WebSocket-Protocol")) // Xử lý lỗi WebSocket
+                                .removeRequestHeader("Sec-WebSocket-Protocol"))
                         .uri("lb://CHAT-SERVICE"))
                 // Thêm các route khác nếu cần
                 .build();

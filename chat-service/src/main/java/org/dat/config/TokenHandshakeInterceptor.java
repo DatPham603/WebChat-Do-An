@@ -31,6 +31,44 @@ public class TokenHandshakeInterceptor implements HandshakeInterceptor {
     @Value("${spring.authentication.jwt.secret}")
     private String secretKey;
 
+//    @Override
+//    public boolean beforeHandshake(
+//            ServerHttpRequest request, ServerHttpResponse response,
+//            WebSocketHandler wsHandler, Map<String, Object> attributes) {
+//        logger.info("before handshake");
+//        if (request instanceof ServletServerHttpRequest servletRequest) {
+//            String token = request.getHeaders().getFirst("Authorization");
+//            if (token != null && token.startsWith("Bearer ")) {
+//                token = token.substring(7);
+//            } else {
+//                // Có thể lấy token từ query param nếu cần
+//                String query = servletRequest.getServletRequest().getQueryString();
+//                if (query != null) {
+//                    MultiValueMap<String, String> queryParams = UriComponentsBuilder
+//                            .fromUriString("?" + query).build().getQueryParams();
+//                    token = queryParams.getFirst("token");
+//                }
+//
+//                if (token == null) {
+//                    logger.warn("No Authorization header found or invalid format.");
+//                    return false;
+//                }
+//            }
+//
+//            JwtParser jwtParser = Jwts.parser()
+//                    .verifyWith(getSignKey())
+//                    .build();
+//
+//            Claims claims = jwtParser.parseClaimsJws(token).getBody();
+//
+//            attributes.put("userId", String.valueOf(claims.get("userId")));
+//            attributes.put("email", claims.getSubject());
+//            attributes.put("username", claims.get("username"));
+//            logger.info("attributes : {}", attributes);
+//        }
+//        return true;
+//    }
+
     @Override
     public boolean beforeHandshake(
             ServerHttpRequest request, ServerHttpResponse response,
@@ -61,9 +99,11 @@ public class TokenHandshakeInterceptor implements HandshakeInterceptor {
 
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
 
-            attributes.put("userId", claims.getId());
-            attributes.put("email", claims.getSubject());
-            attributes.put("username", claims.get("username"));
+            String userId = claims.get("userId").toString();
+            String email = claims.getSubject().toString();
+            String username = claims.get("username").toString();
+            UserPrincipal userPrincipal = new UserPrincipal(userId, email, username);
+            attributes.put("principal", userPrincipal);
             logger.info("attributes : {}", attributes);
         }
         return true;

@@ -31,4 +31,6 @@ public class Chat extends Auditable {
     private String senderName;
     @Column(name = "receiver_id")
     private UUID receiverId;
+    @Column(name = "deleted")
+    private Boolean deleted;
 }

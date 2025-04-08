@@ -45,6 +45,7 @@ public class JwtTokenUtils {
         Date expirationDate = new Date(currentTimeMillis + 86400000);
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
+        claims.put("userId", user.getId());
         claims.put("sub", user.getEmail());
         claims.put("exp", expirationDate);
         claims.put("scope", roleNames);
@@ -64,6 +65,7 @@ public class JwtTokenUtils {
         Date expirationDate = new Date(currentTimeMillis + refreshTokenDuration);
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
+        claims.put("userId", user.getId());
         claims.put("sub", user.getEmail());
         claims.put("exp", expirationDate);
         claims.put("scope", roleNames);
