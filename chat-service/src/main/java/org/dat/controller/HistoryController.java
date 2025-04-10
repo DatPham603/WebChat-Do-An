@@ -1,7 +1,7 @@
 package org.dat.controller;
 
-import org.dat.dto.ChatDTO;
-import org.dat.dto.Response;
+import org.dat.dto.dto.ChatDTO;
+import org.dat.dto.dto.Response;
 import org.dat.service.ChatService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,5 +23,11 @@ public class HistoryController {
             @PathVariable("userId") UUID userId,
             @PathVariable("receiverId") UUID receiverId) {
         return Response.of(chatService.getMessagesByReceiver(userId, receiverId));
+    }
+
+    @GetMapping("/room/history/{groupId}")
+    public Response<List<ChatDTO>> getGroupChatHistory(
+            @PathVariable("groupId") UUID groupId) {
+        return Response.of(chatService.getGroupHistoryMessage(groupId));
     }
 }

@@ -1,13 +1,14 @@
 package org.dat.repository;
 
-import org.dat.dto.ChatDTO;
 import org.dat.entity.Chat;
+import org.dat.enums.MessageType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -17,5 +18,27 @@ public interface ChatRepository extends JpaRepository<Chat, UUID> {
     @Query("select n from Chat n where n.deleted = false and n.senderId = :userId and n.receiverId = :receiverId or " +
             "n.senderId = :receiverId and n.receiverId = :userId order by n.createdDate")
     List<Chat> findChatByReceiverId(@Param("userId") UUID userId, @Param("receiverId") UUID receiverId);
+
+    @Query("select n from Chat n where n.deleted = false and n.receiverId = :groupId AND n.type = :type order by n.createdDate")
+    List<Chat> findByReceiverIdAndType(@Param("groupId") UUID groupId, @Param("type") MessageType type);
+
+    @Query("SELECT c FROM Chat c WHERE ((c.senderId = :userId OR c.receiverId = :userId) AND c.type = :type) and c.deleted = false ")
+    List<Chat> findBySenderIdOrReceiverIdAndType(
+            @Param("userId") UUID userId,
+            @Param("type") MessageType type
+    );
+
+    @Query("SELECT c FROM Chat c WHERE ((c.senderId = :senderId AND c.receiverId = :receiverId) OR (c.senderId = :receiverId AND c.receiverId = :senderId)) AND c.type = :type ORDER BY c.createdDate DESC LIMIT 1")
+    Optional<Chat> findTopBySenderIdAndReceiverIdOrSenderIdAndReceiverIdAndTypeOrderByCreatedDateDesc(
+            @Param("senderId") UUID senderId,
+            @Param("receiverId") UUID receiverId,
+            @Param("type") MessageType type
+    );
+
+    @Query("SELECT c FROM Chat c WHERE c.receiverId = :groupId AND c.type = :type ORDER BY c.createdDate DESC LIMIT 1")
+    Optional<Chat> findTopByReceiverIdAndTypeOrderByCreatedDateDesc(
+            @Param("groupId") UUID groupId,
+            @Param("type") MessageType type
+    );
 }
 

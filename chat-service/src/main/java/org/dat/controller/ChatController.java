@@ -24,40 +24,15 @@ public class ChatController {
     private final ChatRepository chatRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-//    @MessageMapping("/chat.send")
-//    public void sendMessage(@Payload Chat chatMessage,
-//                            SimpMessageHeaderAccessor headerAccessor) {
-//        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-//        String senderUserId = (String) sessionAttributes.get("userId");
-//        String senderUsername = (String) sessionAttributes.get("username");
-//        String senderEmail = (String) sessionAttributes.get("email");
-//        String receiverId = chatMessage.getReceiverId().toString();
-//
-//        // Lưu tin nhắn vào database (nếu cần)
-//        Chat savedChat = chatRepository.save(chatMessage);
-//
-//        // Gửi tin nhắn đến queue của người nhận
-//        //Tham số thứ 2, destination, là endpoint mà client cần subscribe
-//        messagingTemplate.convertAndSendToUser(String.valueOf(receiverId), "/queue/reply", savedChat);
-//
-//        // Gửi tin nhắn đến queue của người gửi để hiển thị tin nhắn đã gửi
-//        messagingTemplate.convertAndSendToUser(String.valueOf(senderUserId), "/queue/reply", savedChat);
-//        log.info(senderUserId + "to" + receiverId);
-//        // Sử dụng thông tin người gửi nếu cần
-//        System.out.println("Message from " + senderUsername + " (" + senderEmail + ")");
-//    }
-
     @MessageMapping("/chat.send")
     public void sendMessage(@Payload Chat chatMessage, Principal principal) {
         if (principal instanceof UserPrincipal userPrincipal) {
             String senderId = userPrincipal.getUserId();
             String senderUsername = userPrincipal.getUsername();
             chatMessage.setDeleted(false);
+            chatMessage.setSenderId(UUID.fromString(senderId));
+            chatMessage.setSenderName(senderUsername);
             chatRepository.save(chatMessage);
-
-            // ✅ Gán thông tin người gửi vào tin nhắn
-            chatMessage.setSenderId(UUID.fromString(senderId)); // bạn cần có field này trong Chat
-            chatMessage.setSenderName(senderUsername); // nếu cần
 
             // ✅ Gửi tin nhắn tới người nhận (1-1)
             messagingTemplate.convertAndSendToUser(
@@ -74,23 +49,22 @@ public class ChatController {
     }
 
     @MessageMapping("/chat.send.room/{roomId}")
-    //    @SendTo("/topic/public") //dùng cho topic, ai dky vào topic thì nhận được
     public void sendRoomMessage(@Payload Chat chatMessage,
                                 @DestinationVariable String roomId,
-                                SimpMessageHeaderAccessor headerAccessor) {
-        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-        String senderUserId = (String) sessionAttributes.get("userId");
-        String senderUsername = (String) sessionAttributes.get("username");
-        String senderEmail = (String) sessionAttributes.get("email");
+                                Principal principal) {
+        if (principal instanceof UserPrincipal userPrincipal) {
+            String senderId = userPrincipal.getUserId();
+            String senderUsername = userPrincipal.getUsername();
+            chatMessage.setDeleted(false);
+            chatMessage.setSenderId(UUID.fromString(senderId));
+            chatMessage.setSenderName(senderUsername);
+            chatRepository.save(chatMessage);
 
-        // Lưu tin nhắn vào database (nếu cần)
-        Chat savedChat = chatRepository.save(chatMessage);
+            System.out.println("Tin nhắn" + chatMessage.getContent() + " được gửi đi " + roomId);
+            messagingTemplate.convertAndSend("/topic/rooms/" + roomId, chatMessage);
 
-        // Gửi tin nhắn đến topic của room
-        messagingTemplate.convertAndSend("/topic/rooms/" + roomId, savedChat);
-
-        // Sử dụng thông tin người gửi nếu cần
-        System.out.println("Message from " + senderUsername + " (" + senderEmail + ")");
+            System.out.println("Message from " + chatMessage.getContent() + " in room " + roomId);
+        }
     }
 
 }
