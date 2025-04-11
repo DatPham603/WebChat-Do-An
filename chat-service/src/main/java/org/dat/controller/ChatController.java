@@ -5,12 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.dat.config.UserPrincipal;
 import org.dat.entity.Chat;
 import org.dat.repository.ChatRepository;
+import org.dat.service.LocalStorageService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.Map;
@@ -23,6 +28,7 @@ public class ChatController {
 
     private final ChatRepository chatRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final LocalStorageService storageService;
 
     @MessageMapping("/chat.send")
     public void sendMessage(@Payload Chat chatMessage, Principal principal) {

@@ -1,0 +1,24 @@
+chat nhóm
+
+gọi nhóm
+gửi file + ảnh
+avt user
+dang ky tai khoan
+quản lý trạng thái user- onl / off
+add user vô nhóm by email//
+tìm kiếm user//
+trang thông tin User
+( thông báo)
+ (gửi icon)
+xóa tin nhắn
+trạng thái đã xem/ chưa xem
+notification
+tìm bạn = email => kết bạn => nhắn tin
+lịch sử cuộc gọi
+
+#chatContainer class="overflow-y-auto h-full messages flex-grow-1 overflow-auto p-3"
+side bar phải -> nếu nhóm thì là side bar nhóm : danh sách thành viên, nút thêm thành viên -> tạo 1 form mở ra -> tìm kiếm user -> ad vô nhóm
+nếu là user -> user : media, link doc
+
+
+thanh tìm kiếm -> tìm ra user -> click vào user -> nếu da kết bạn -> nhắn tin luôn ? -> nếu chưa kết bạn -> hiện ra màn kết bạn -> thằng kia chấp nhận -> chấp nhận kết bạn

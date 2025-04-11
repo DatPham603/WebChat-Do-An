@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dat.enums.ContentType;
 import org.dat.enums.MessageType;
 
 import java.util.UUID;
@@ -21,4 +22,6 @@ public class ChatDTO {
     private String senderName;
     private UUID receiverId;
     private Boolean deleted;
+    private String fileUrl;
+    private ContentType contentType;
 }

@@ -29,7 +29,10 @@ public class ChatService {
                 .type(chat.getType())
                 .senderId(chat.getSenderId())
                 .receiverId(chat.getReceiverId())
+                .senderName(chat.getSenderName())
                 .content(chat.getContent())
+                .fileUrl(chat.getFileUrl())
+                .contentType(chat.getContentType())
                 .deleted(chat.getDeleted())
                 .build()).collect(Collectors.toList());
     }
@@ -41,7 +44,10 @@ public class ChatService {
                 .type(chat.getType())
                 .senderId(chat.getSenderId())
                 .receiverId(chat.getReceiverId())
+                .senderName(chat.getSenderName())
                 .content(chat.getContent())
+                .fileUrl(chat.getFileUrl())
+                .contentType(chat.getContentType())
                 .deleted(chat.getDeleted())
                 .build()).collect(Collectors.toList());
     }

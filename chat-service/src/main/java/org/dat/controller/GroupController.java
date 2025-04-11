@@ -33,11 +33,11 @@ public class GroupController {
     @PostMapping("/create-group")
     public Response<Group> createGroup(
             @RequestBody CreateGroupRequest createGroupRequest) {
-            Group newGroup = groupService.createGroup(
-                    createGroupRequest.getName(),
-                    UUID.fromString(createGroupRequest.getOwnerId()),
-                    createGroupRequest.getMemberIds()
-            );
+        Group newGroup = groupService.createGroup(
+                createGroupRequest.getName(),
+                UUID.fromString(createGroupRequest.getOwnerId()),
+                createGroupRequest.getMemberIds()
+        );
 
         if (createGroupRequest.getMemberIds() != null && !createGroupRequest.getMemberIds().isEmpty()) {
             messagingTemplate.convertAndSend(
@@ -45,7 +45,7 @@ public class GroupController {
                     String.format("Group '%s' created with initial members.", newGroup.getName())
             );
         }
-            return Response.of(newGroup);
+        return Response.of(newGroup);
     }
 
     @PostMapping("/{groupId}/add-user")

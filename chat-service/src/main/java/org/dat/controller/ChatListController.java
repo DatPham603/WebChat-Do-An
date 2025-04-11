@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.dat.dto.dto.ChatListItemDTO;
 import org.dat.dto.dto.Response;
 import org.dat.service.ChatListService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +19,8 @@ public class ChatListController {
 
     @GetMapping("/list")
     public Response<List<ChatListItemDTO>> getChatList(@RequestParam("userId") String userIdStr) {
-            UUID currentUserId = UUID.fromString(userIdStr);
-            List<ChatListItemDTO> chatList = chatListService.getChatList(currentUserId);
-            return Response.of(chatList);
-
+        UUID currentUserId = UUID.fromString(userIdStr);
+        List<ChatListItemDTO> chatList = chatListService.getChatList(currentUserId);
+        return Response.of(chatList);
     }
 }

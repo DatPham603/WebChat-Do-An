@@ -2,6 +2,8 @@ package org.dat.repository;
 
 import org.dat.entity.Chat;
 import org.dat.enums.MessageType;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,7 +30,8 @@ public interface ChatRepository extends JpaRepository<Chat, UUID> {
             @Param("type") MessageType type
     );
 
-    @Query("SELECT c FROM Chat c WHERE ((c.senderId = :senderId AND c.receiverId = :receiverId) OR (c.senderId = :receiverId AND c.receiverId = :senderId)) AND c.type = :type ORDER BY c.createdDate DESC LIMIT 1")
+    @Query("SELECT c FROM Chat c WHERE ((c.senderId = :senderId AND c.receiverId = :receiverId) " +
+            "OR (c.senderId = :receiverId AND c.receiverId = :senderId)) AND c.type = :type ORDER BY c.createdDate DESC LIMIT 1")
     Optional<Chat> findTopBySenderIdAndReceiverIdOrSenderIdAndReceiverIdAndTypeOrderByCreatedDateDesc(
             @Param("senderId") UUID senderId,
             @Param("receiverId") UUID receiverId,
@@ -40,5 +43,7 @@ public interface ChatRepository extends JpaRepository<Chat, UUID> {
             @Param("groupId") UUID groupId,
             @Param("type") MessageType type
     );
+
+    List<Chat> findAll(Specification<Chat> spec, Sort sortByCreatedDateDesc);
 }
 

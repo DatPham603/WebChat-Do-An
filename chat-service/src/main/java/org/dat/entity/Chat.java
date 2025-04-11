@@ -2,6 +2,7 @@ package org.dat.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.dat.enums.ContentType;
 import org.dat.enums.MessageType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -33,4 +34,9 @@ public class Chat extends Auditable {
     private UUID receiverId;
     @Column(name = "deleted")
     private Boolean deleted;
+    @Column(name = "file_url")
+    private String fileUrl;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "content_type")
+    private ContentType contentType;
 }

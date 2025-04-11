@@ -14,6 +14,7 @@ public class SecurityConstants {
             "/api/v1/users/validate/**",
             "/ws-chat/**",
             "/api/v1/chats/history/**",
-            "/api/v1/groups/**"
+            "/api/v1/groups/**",
+            "/api/v1/file/**"
     };
 }
