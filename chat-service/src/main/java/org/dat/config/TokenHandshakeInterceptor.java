@@ -61,9 +61,11 @@ public class TokenHandshakeInterceptor implements HandshakeInterceptor {
 
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
 
-            attributes.put("userId", claims.getId());
-            attributes.put("email", claims.getSubject());
-            attributes.put("username", claims.get("username"));
+            String userId = claims.get("userId").toString();
+            String email = claims.getSubject().toString();
+            String username = claims.get("username").toString();
+            UserPrincipal userPrincipal = new UserPrincipal(userId, email, username);
+            attributes.put("principal", userPrincipal);
             logger.info("attributes : {}", attributes);
         }
         return true;

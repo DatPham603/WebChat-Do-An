@@ -12,6 +12,9 @@ public class SecurityConstants {
             "/api/v1/users/refresh-token/**",
             "/api/v1/users/logout/**",
             "/api/v1/users/validate/**",
-            "/ws-chat/**"
+            "/ws-chat/**",
+            "/api/v1/chats/history/**",
+            "/api/v1/groups/**",
+            "/api/v1/file/**"
     };
 }
