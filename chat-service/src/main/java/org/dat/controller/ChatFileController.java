@@ -46,10 +46,8 @@ public class ChatFileController {
         }
     }
 
-    @GetMapping(
-            value = "/get-image/{filename}",
-            produces = MediaType.IMAGE_JPEG_VALUE // Hoặc MediaType.IMAGE_PNG_VALUE tùy thuộc vào loại ảnh
-    )
+    @GetMapping(value = "/get-image/{filename}",
+                produces = MediaType.IMAGE_JPEG_VALUE)// Hoặc MediaType.IMAGE_PNG_VALUE tùy thuộc vào loại ảnh
     public @ResponseBody byte[] getImage(@PathVariable String filename) throws IOException {
         Path imagePath = Paths.get("./uploads/images/" + filename);
         if (!Files.exists(imagePath)) {

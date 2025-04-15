@@ -47,6 +47,8 @@ public class User extends Auditable implements UserDetails {
     private Boolean deleted;
     @Column(name = "enabled")
     private boolean enabled;
+    @Column(name = "avatar")
+    private String avatar;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

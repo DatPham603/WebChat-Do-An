@@ -237,7 +237,6 @@ public class UserService {
                 .build();
     }
 
-
     public UserDTO updateUserInfor(UUID userId, UpdateUserInforRequest updateUserInforRequest) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));

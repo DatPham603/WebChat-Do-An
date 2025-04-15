@@ -18,7 +18,7 @@ public class LocalStorageService {
         this.fileStorageLocation = Paths.get("./uploads/files").toAbsolutePath().normalize();
         this.imageStorageLocation = Paths.get("./uploads/images").toAbsolutePath().normalize();
         try {
-            Files.createDirectories(this.fileStorageLocation);
+            Files.createDirectories(this.fileStorageLocation); // tạo directory
             Files.createDirectories(this.imageStorageLocation);
         } catch (IOException e) {
             throw new RuntimeException("Không thể tạo thư mục lưu trữ.", e);
