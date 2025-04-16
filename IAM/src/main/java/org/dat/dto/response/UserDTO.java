@@ -18,7 +18,9 @@ public class UserDTO {
     private String userName;
     private String email;
     private String address;
+    private String phoneNumber;
     private List<String> roleName;
     private LocalDate dateOfBirth;
     private List<String> perDescription;
+    private String avatar;
 }

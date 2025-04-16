@@ -11,6 +11,7 @@ import org.dat.service.GroupService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -72,4 +73,10 @@ public class GroupController {
             throw new RuntimeException("Something went wrong", e);
         }
     }
+
+    @GetMapping("/get-group-users/{groupId}")
+    public Response<List<UserDTO>> getGroupUsers(@PathVariable("groupId") UUID groupId) {
+        return Response.of(groupService.getUsersFromGroup(groupId));
+    }
+
 }

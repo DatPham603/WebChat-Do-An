@@ -98,7 +98,9 @@ public class UserService {
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
+                .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
+                .avatar(user.getAvatar())
                 .roleName(enrichRole(user.getId()))
                 .perDescription(enrichPermission(role.getId()))
                 .build();
@@ -169,6 +171,8 @@ public class UserService {
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .roleName(roleNames)
                 .perDescription(permissionDescriptions)
@@ -200,6 +204,8 @@ public class UserService {
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .roleName(roleNames)
                 .perDescription(permissionDescriptions)
@@ -231,6 +237,8 @@ public class UserService {
                 .userName(user.getUsername())
                 .email(user.getEmail())
                 .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .roleName(roleNames)
                 .perDescription(permissionDescriptions)
@@ -260,6 +268,8 @@ public class UserService {
                 .id(userId)
                 .userName(existingUser.getUsername())
                 .email(existingUser.getEmail())
+                .avatar(existingUser.getAvatar())
+                .phoneNumber(existingUser.getPhoneNumber())
                 .address(existingUser.getAddress())
                 .dateOfBirth(existingUser.getDateOfBirth())
                 .build();
@@ -278,9 +288,24 @@ public class UserService {
                 .id(user.getId())
                 .userName(user.getUsername())
                 .email(user.getEmail())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
                 .address(user.getAddress())
                 .dateOfBirth(user.getDateOfBirth())
                 .build());
+    }
+
+    public List<UserDTO> getAllUsersById(List<UUID> userId) {
+        List<UserDTO> userDTOList = userRepository.findUserByUserId(userId).stream().map(user -> UserDTO.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .dateOfBirth(user.getDateOfBirth())
+                .build()).toList();
+        return userDTOList;
     }
 
     public String logout(String accessToken, String refreshToken) {

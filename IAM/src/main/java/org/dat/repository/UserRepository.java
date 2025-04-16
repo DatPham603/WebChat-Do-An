@@ -30,4 +30,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 //            "WHERE unaccent(u.username || ' ' || u.email || ' ' || u.phone_number || ' ' || u.address) " +
 //            "ILIKE unaccent(CONCAT('%', :keyword, '%'))", nativeQuery = true)
 //    Page<User> findByKeyWord(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("select n from User n where n.deleted = false and n.id in :id")
+    List<User> findUserByUserId(@Param("id") List<UUID> id);
 }
