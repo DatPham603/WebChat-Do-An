@@ -118,12 +118,24 @@ public class FriendService {
 
     // API để cập nhật tên người dùng trong bảng Friend
     public void updateFriendNames(UUID userId, String userName) {
-        List<Friend> friends = friendRepository.findFriendByUserId(userId);
+        List<Friend> friends = friendRepository.findUser(userId);
         friends.forEach(friend -> {
             if (friend.getUserId().equals(userId)) {
                 friend.setUserName(userName);
             } else {
                 friend.setFriendName(userName);
+            }
+            friendRepository.save(friend);
+        });
+    }
+
+    public void updateFriendEmails(UUID userId, String email) {
+        List<Friend> friends = friendRepository.findUser(userId);
+        friends.forEach(friend -> {
+            if (friend.getUserId().equals(userId)) {
+                friend.setEmail(email);
+            } else {
+                friend.setFriendEmail(email);
             }
             friendRepository.save(friend);
         });

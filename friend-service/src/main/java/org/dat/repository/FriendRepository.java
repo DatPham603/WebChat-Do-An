@@ -15,4 +15,7 @@ public interface FriendRepository extends JpaRepository<Friend, UUID> {
 
     @Query("select n from Friend n where n.deleted = false and n.userId=:userId and n.confirmed=true")
     List<Friend> findFriendByUserId(UUID userId);
+
+    @Query("select n from Friend n where n.deleted = false and n.userId=:userId or n.friendId=:userId and n.confirmed=true")
+    List<Friend> findUser(UUID userId);
 }

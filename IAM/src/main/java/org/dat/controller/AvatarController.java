@@ -2,11 +2,9 @@ package org.dat.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dat.dto.response.UserDTO;
 import org.dat.entity.User;
 import org.dat.repository.UserRepository;
 import org.dat.service.AvatarStorageService;
-import org.dat.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -15,6 +15,7 @@ public class UpdateUserInforRequest {
     private String userName;
     private String passWord;
     private String phoneNumber;
+    private String email;
     private String address;
     private LocalDate dateOfBirth;
 }

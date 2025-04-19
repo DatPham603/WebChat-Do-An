@@ -1,16 +1,14 @@
 package org.dat.service;
 
 import org.dat.config.JwtTokenUtils;
-import org.dat.dto.request.LoginRequest;
-import org.dat.dto.request.RefreshTokenRequest;
-import org.dat.dto.request.RegisterRequest;
-import org.dat.dto.request.UpdateUserInforRequest;
+import org.dat.dto.request.*;
 import org.dat.dto.response.JwtDTO;
 import org.dat.dto.response.UserAuthDTO;
 import org.dat.dto.response.UserDTO;
 import org.dat.entity.*;
 import org.dat.enums.EnumRole;
 import org.dat.exception.UserExistedException;
+import org.dat.feignConfig.FriendServiceClient;
 import org.dat.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.dat.repository.*;
@@ -42,6 +40,7 @@ public class UserService {
     private final JwtTokenUtils jwtTokenUtils;
     private final InvalidTokenRepository invalidTokenRepository;
     private final UserMapper userMapper;
+    private final FriendServiceClient friendServiceClient;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
@@ -52,8 +51,8 @@ public class UserService {
                        RefreshTokenService refreshTokenService,
                        JwtTokenUtils jwtTokenUtils,
                        InvalidTokenRepository invalidTokenRepository,
-                       UserMapper userMapper
-    ) {
+                       FriendServiceClient friendServiceClient,
+                       UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.roleUserRepository = roleUserRepository;
@@ -64,6 +63,7 @@ public class UserService {
         this.jwtTokenUtils = jwtTokenUtils;
         this.invalidTokenRepository = invalidTokenRepository;
         this.userMapper = userMapper;
+        this.friendServiceClient = friendServiceClient;
     }
 
     public UserDTO register(RegisterRequest registerRequest) throws UserExistedException {
@@ -248,6 +248,10 @@ public class UserService {
     public UserDTO updateUserInfor(UUID userId, UpdateUserInforRequest updateUserInforRequest) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UpdateNameRequest request = new UpdateNameRequest();
+        request.setUserName(updateUserInforRequest.getUserName());
+        UpdateEmailRequest requestEmail = new UpdateEmailRequest();
+        requestEmail.setEmail(updateUserInforRequest.getEmail());
         if (updateUserInforRequest.getUserName() != null) {
             existingUser.setUserName(updateUserInforRequest.getUserName());
         }
@@ -263,7 +267,16 @@ public class UserService {
         if (updateUserInforRequest.getDateOfBirth() != null) {
             existingUser.setDateOfBirth(updateUserInforRequest.getDateOfBirth());
         }
+        if(updateUserInforRequest.getEmail() != null && userRepository.existsByEmail(updateUserInforRequest.getEmail())) {
+            existingUser.setEmail(updateUserInforRequest.getEmail());
+        }
         userRepository.save(existingUser);
+        try{
+            friendServiceClient.updateFriendName(userId, request);
+            friendServiceClient.updateFriendEmail(userId, requestEmail);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gọi API updateFriendEmails: " + e.getMessage());
+        }
         return UserDTO.builder()
                 .id(userId)
                 .userName(existingUser.getUsername())
