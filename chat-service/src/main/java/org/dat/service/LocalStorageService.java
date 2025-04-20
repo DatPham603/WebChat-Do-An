@@ -26,7 +26,8 @@ public class LocalStorageService {
     }
 
     public String storeFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+//        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String fileName = file.getOriginalFilename();
         Path targetLocation = this.fileStorageLocation.resolve(fileName);
         Files.copy(file.getInputStream(), targetLocation);
         return "/uploads/files/" + fileName; // Trả về đường dẫn tương đối
@@ -34,6 +35,7 @@ public class LocalStorageService {
 
     public String storeImage(MultipartFile image) throws IOException {
         String imageName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+//        String imageName = image.getOriginalFilename();
         Path targetLocation = this.imageStorageLocation.resolve(imageName);
         Files.copy(image.getInputStream(), targetLocation);
         return "/uploads/images/" + imageName; // Trả về đường dẫn tương đối
