@@ -13,13 +13,16 @@ import java.util.UUID;
 public class LocalStorageService {
     private final Path fileStorageLocation;
     private final Path imageStorageLocation;
+    private final Path groupAvatarStorageLocation;
 
     public LocalStorageService() {
         this.fileStorageLocation = Paths.get("./uploads/files").toAbsolutePath().normalize();
         this.imageStorageLocation = Paths.get("./uploads/images").toAbsolutePath().normalize();
+        this.groupAvatarStorageLocation = Paths.get("./uploads//group_avatar").toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation); // tạo directory
             Files.createDirectories(this.imageStorageLocation);
+            Files.createDirectories(this.groupAvatarStorageLocation);
         } catch (IOException e) {
             throw new RuntimeException("Không thể tạo thư mục lưu trữ.", e);
         }
@@ -42,7 +45,7 @@ public class LocalStorageService {
 
     public String storeGroupAvatarImage(MultipartFile image) throws IOException {
         String imageName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-        Path targetLocation = this.imageStorageLocation.resolve(imageName);
+        Path targetLocation = this.groupAvatarStorageLocation.resolve(imageName);
         Files.copy(image.getInputStream(), targetLocation);
         return "/uploads/group_avatar/" + imageName;
     }

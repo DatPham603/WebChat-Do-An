@@ -37,7 +37,7 @@ public class ChatFileController {
     @PostMapping("/upload-image")
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("image") MultipartFile image) {
         try {
-            String imageUrl = storageService.storeImage(image); // Gọi service để lưu trữ ảnh
+            String imageUrl = storageService.storeImage(image);
             return ResponseEntity.ok(Map.of("url", imageUrl));
         } catch (Exception e) {
             log.error("Lỗi khi tải lên ảnh: {}", e.getMessage());

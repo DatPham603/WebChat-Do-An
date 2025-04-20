@@ -92,7 +92,7 @@ public class ChatListService {
                 dto.setType("group");
                 dto.setId(group.getId());
                 dto.setName(group.getName());
-//                dto.setAvatar(group.getAvarta);
+                dto.setAvatar(group.getAvatar());
                 long memberCount = groupMemberRepository.countByGroupId(group.getId());
                 dto.setMemberCount((int) memberCount);
                 dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "No messages yet");
