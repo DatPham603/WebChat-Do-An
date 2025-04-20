@@ -23,4 +23,6 @@ public class Group extends Auditable {
     private String name;
     @Column(name = "ownerId")
     private UUID ownerId;
+    @Column(name = "avatar")
+    private String avatar;
 }

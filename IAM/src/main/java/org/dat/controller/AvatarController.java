@@ -32,7 +32,7 @@ public class AvatarController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         try {
-            String imageUrl = avatarStorageService.storeAvatar(avatar); // Gọi service để lưu trữ ảnh
+            String imageUrl = avatarStorageService.storeAvatar(avatar);
             User user = userRepository.findByEmail(username).get();
             user.setAvatar(imageUrl);
             userRepository.save(user);

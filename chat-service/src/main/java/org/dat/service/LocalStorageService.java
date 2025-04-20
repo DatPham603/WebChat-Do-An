@@ -35,9 +35,15 @@ public class LocalStorageService {
 
     public String storeImage(MultipartFile image) throws IOException {
         String imageName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-//        String imageName = image.getOriginalFilename();
         Path targetLocation = this.imageStorageLocation.resolve(imageName);
         Files.copy(image.getInputStream(), targetLocation);
         return "/uploads/images/" + imageName; // Trả về đường dẫn tương đối
+    }
+
+    public String storeGroupAvatarImage(MultipartFile image) throws IOException {
+        String imageName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+        Path targetLocation = this.imageStorageLocation.resolve(imageName);
+        Files.copy(image.getInputStream(), targetLocation);
+        return "/uploads/group_avatar/" + imageName;
     }
 }
