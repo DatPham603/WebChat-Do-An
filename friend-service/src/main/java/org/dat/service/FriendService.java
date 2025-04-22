@@ -40,6 +40,8 @@ public class FriendService {
                     .deleted(false)
                     .userName(user.getData().getUserName())
                     .friendName(friend.getData().getUserName())
+                    .email(user.getData().getEmail())
+                    .friendEmail(friend.getData().getEmail())
                     .build());
 
             friendRepository.save(Friend.builder()
@@ -49,6 +51,8 @@ public class FriendService {
                     .deleted(false)
                     .userName(friend.getData().getUserName())
                     .friendName(user.getData().getUserName())
+                    .email(friend.getData().getEmail())
+                    .friendEmail(user.getData().getEmail())
                     .build());
         }
     }
@@ -68,9 +72,13 @@ public class FriendService {
                 friend1.setConfirmed(true);
                 friend2.setConfirmed(true);
                 friend1.setUserName(user.getData().getUserName());
-                friend2.setFriendName(user.getData().getUserName());
-                friend1.setFriendName(friend.getData().getUserName());
                 friend2.setUserName(friend.getData().getUserName());
+                friend1.setFriendName(friend.getData().getUserName());
+                friend2.setFriendName(user.getData().getUserName());
+                friend1.setEmail(user.getData().getEmail());
+                friend2.setEmail(friend.getData().getEmail());
+                friend1.setFriendEmail(friend.getData().getEmail());
+                friend2.setFriendEmail(user.getData().getEmail());
 
                 friendRepository.save(friend1);
                 friendRepository.save(friend2);
@@ -90,6 +98,7 @@ public class FriendService {
         return friends.stream().map(friend -> FriendDTO.builder()
                 .friendId(friend.getFriendId())
                 .friendName(friend.getFriendName())
+                .friendEmail(friend.getFriendEmail())
                 .userId(friend.getUserId())
                 .build()).toList();
     }
@@ -102,18 +111,31 @@ public class FriendService {
         return friends.stream().map(friend -> FriendDTO.builder()
                 .friendId(friend.getFriendId())
                 .friendName(friend.getFriendName())
+                .friendEmail(friend.getFriendEmail())
                 .userId(friend.getUserId())
                 .build()).toList();
     }
 
     // API để cập nhật tên người dùng trong bảng Friend
     public void updateFriendNames(UUID userId, String userName) {
-        List<Friend> friends = friendRepository.findFriendByUserId(userId);
+        List<Friend> friends = friendRepository.findUser(userId);
         friends.forEach(friend -> {
             if (friend.getUserId().equals(userId)) {
                 friend.setUserName(userName);
             } else {
                 friend.setFriendName(userName);
+            }
+            friendRepository.save(friend);
+        });
+    }
+
+    public void updateFriendEmails(UUID userId, String email) {
+        List<Friend> friends = friendRepository.findUser(userId);
+        friends.forEach(friend -> {
+            if (friend.getUserId().equals(userId)) {
+                friend.setEmail(email);
+            } else {
+                friend.setFriendEmail(email);
             }
             friendRepository.save(friend);
         });

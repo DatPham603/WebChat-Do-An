@@ -13,6 +13,7 @@ import org.dat.repository.GroupRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -103,5 +104,14 @@ public class GroupService {
         }
 
         return newGroup;
+    }
+
+    public List<UserDTO> getUsersFromGroup(UUID groupId) {
+        Group group = groupRepository.findById(groupId).get();
+        if(group == null) {
+            throw new IllegalArgumentException("Group not found.");
+        }
+        List<UUID> userId = groupMemberRepository.findUserIdByGroupId(groupId);
+        return iamServiceClient.getUsersByIds(userId).getData();
     }
 }

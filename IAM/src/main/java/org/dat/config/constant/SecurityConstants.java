@@ -15,6 +15,7 @@ public class SecurityConstants {
             "/ws-chat/**",
             "/api/v1/chats/history/**",
             "/api/v1/groups/**",
-            "/api/v1/file/**"
+            "/api/v1/file/**",
+            "/api/v1/users/avatar/get-avatar/**"
     };
 }

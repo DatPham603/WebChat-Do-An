@@ -15,4 +15,5 @@ public class FriendDTO {
     private UUID userId;
     private UUID friendId;
     private String friendName;
+    private String friendEmail;
 }

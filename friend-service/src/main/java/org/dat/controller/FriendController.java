@@ -2,6 +2,8 @@ package org.dat.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.dat.dto.request.UpdateEmailRequest;
+import org.dat.dto.request.UpdateNameRequest;
 import org.dat.dto.response.FriendDTO;
 import org.dat.dto.response.Response;
 import org.dat.service.FriendService;
@@ -38,4 +40,16 @@ public class FriendController {
     public Response<List<FriendDTO>> getListFriend(@PathVariable String mail) {
         return Response.of(friendService.getFriendByUserMail(mail));
     }
+
+    @PutMapping("/users/{userId}/name")
+    public Response<Void> updateFriendName(@PathVariable UUID userId, @RequestBody UpdateNameRequest request) {
+            friendService.updateFriendNames(userId, request.getUserName());
+            return Response.ok();
+    }
+
+    @PutMapping("/users/{userId}/email")
+    public Response<Void> updateFriendEmail(@PathVariable UUID userId, @RequestBody UpdateEmailRequest request) {
+            friendService.updateFriendEmails(userId, request.getEmail());
+            return Response.ok();
+        }
 }

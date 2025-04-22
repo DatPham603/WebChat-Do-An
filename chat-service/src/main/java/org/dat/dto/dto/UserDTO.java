@@ -21,4 +21,5 @@ public class UserDTO {
     private List<String> roleName;
     private LocalDate dateOfBirth;
     private List<String> perDescription;
+    private String avatar;
 }

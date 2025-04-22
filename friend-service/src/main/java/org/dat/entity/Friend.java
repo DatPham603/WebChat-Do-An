@@ -27,6 +27,10 @@ public class Friend extends Auditable {
     private String userName;
     @Column(name = "friendName")
     private String friendName;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "friendEmail")
+    private String friendEmail;
     @Column(name = "confirmed")
     private boolean confirmed;
     @Column(name = "deleted")

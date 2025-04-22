@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.dat.enums.ContentType;
 import org.dat.enums.MessageType;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -24,4 +25,5 @@ public class ChatDTO {
     private Boolean deleted;
     private String fileUrl;
     private ContentType contentType;
+//    private Instant createdAt;
 }

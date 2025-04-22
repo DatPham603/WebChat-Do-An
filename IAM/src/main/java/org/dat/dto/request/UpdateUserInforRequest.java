@@ -1,6 +1,5 @@
 package org.dat.dto.request;
 
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +15,7 @@ public class UpdateUserInforRequest {
     private String userName;
     private String passWord;
     private String phoneNumber;
+    private String email;
     private String address;
     private LocalDate dateOfBirth;
 }

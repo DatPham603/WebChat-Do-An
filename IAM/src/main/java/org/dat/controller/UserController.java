@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,6 +77,11 @@ public class UserController {
     public Response<Void> softDeleteUser(@PathVariable("userId") UUID userId) {
         this.userService.softDeleteUser(userId);
         return Response.ok();
+    }
+
+    @GetMapping("/get-users-by-ids")
+    public Response<List<UserDTO>> getUsersByIds(@RequestParam("userIds") List<UUID> userIds){
+        return Response.of(this.userService.getAllUsersById(userIds));
     }
 
     @GetMapping("/validate")

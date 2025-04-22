@@ -30,4 +30,32 @@ public class HistoryController {
             @PathVariable("groupId") UUID groupId) {
         return Response.of(chatService.getGroupHistoryMessage(groupId));
     }
+
+    @GetMapping("/history/list-image/{userId}/{receiverId}")
+    public Response<List<ChatDTO>> getImageChatHistory(
+            @PathVariable("userId") UUID userId,
+            @PathVariable("receiverId") UUID receiverId){
+        return Response.of(chatService.getImageChatHistory(userId, receiverId));
+    }
+
+    @GetMapping("/history/list-file/{userId}/{receiverId}")
+    public Response<List<ChatDTO>> getFileChatHistory(
+            @PathVariable("userId") UUID userId,
+            @PathVariable("receiverId") UUID receiverId){
+        return Response.of(chatService.getFileChatHistory(userId, receiverId));
+    }
+
+    @GetMapping("/room/list-image/history/{groupId}")
+    public Response<List<ChatDTO>> getImageGroupChatHistory(
+            @PathVariable("groupId") UUID groupId) {
+        return Response.of(chatService.getImageGroupHistoryMessage(groupId));
+    }
+
+    @GetMapping("/room/list-file/history/{groupId}")
+    public Response<List<ChatDTO>> getFileGroupChatHistory(
+            @PathVariable("groupId") UUID groupId) {
+        return Response.of(chatService.getFileGroupHistoryMessage(groupId));
+    }
+
+
 }
