@@ -321,6 +321,39 @@ public class UserService {
         return userDTOList;
     }
 
+    public UserDTO getUserInforbyEmailOrPhoneNumber(String searchTerm) {
+        User user = userRepository.findBySearchTerm(searchTerm).orElseThrow(() ->
+                new RuntimeException("User not found"));
+
+        List<RoleUser> roleUsers = roleUserRepository.findAllByUserId(user.getId());
+        if (roleUsers.isEmpty()) {
+            throw new RuntimeException("User has no roles assigned");
+        }
+        List<Role> roles = roleUsers.stream()
+                .map(roleUser -> roleRepository.findById(roleUser.getRoleId())
+                        .orElseThrow(() -> new RuntimeException("Can't find role")))
+                .toList();
+        List<String> roleNames = roles.stream()
+                .map(Role::getCode)
+                .toList();
+
+        List<String> permissionDescriptions = enrichPermissions(
+                roles.stream().map(Role::getId).toList()
+        );
+
+        return UserDTO.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
+                .dateOfBirth(user.getDateOfBirth())
+                .roleName(roleNames)
+                .perDescription(permissionDescriptions)
+                .build();
+    }
+
     public String logout(String accessToken, String refreshToken) {
         if (accessToken.startsWith("Bearer")) {
             accessToken = accessToken.substring(7).trim();

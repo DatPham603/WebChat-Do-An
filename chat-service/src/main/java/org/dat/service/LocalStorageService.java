@@ -29,8 +29,8 @@ public class LocalStorageService {
     }
 
     public String storeFile(MultipartFile file) throws IOException {
-//        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        String fileName = file.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+//        String fileName = file.getOriginalFilename();
         Path targetLocation = this.fileStorageLocation.resolve(fileName);
         Files.copy(file.getInputStream(), targetLocation);
         return "/uploads/files/" + fileName; // Trả về đường dẫn tương đối

@@ -23,6 +23,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmail(String email);
 
+    @Query("SELECT n FROM User n WHERE n.deleted = false AND (n.email LIKE " +
+            "LOWER(:searchTerm) OR n.phoneNumber LIKE LOWER(:searchTerm))")
+    Optional<User> findBySearchTerm(@Param("searchTerm") String searchTerm);
+
     @Query("select n from User n where n.deleted = false and n.userName like %:userName% ")
     Optional<User> findUserByUserName(@Param("userName") String userName);
 

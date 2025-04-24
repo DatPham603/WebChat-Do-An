@@ -18,6 +18,10 @@ spring:
   authentication:
     jwt:
       secret: yPTyD4NJtTyXxf9v+Y9bPerZs6XtiCyD+fNdlB/lRmdq4UrpOK6brnicDMZXbgiq
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
 eureka:
   client:
     service-url:

@@ -40,9 +40,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-//    @PreAuthorize("hasPermission('Document','DELETE')")
     public Response<UserDTO> getUserById(@PathVariable("userId") UUID userId) {
         return Response.of(userService.getUserInfor(userId));
+    }
+
+    @GetMapping("auto-complete")
+    public Response<UserDTO> getUserByEmailOrPhoneNumber(@RequestParam("searchTerm") String searchTerm) {
+        return Response.of(userService.getUserInforbyEmailOrPhoneNumber(searchTerm));
     }
 
     @GetMapping("find-by-email/{email}")
