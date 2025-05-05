@@ -1,11 +1,13 @@
 package org.dat.repository;
 
+import jakarta.transaction.Transactional;
 import org.dat.entity.Chat;
 import org.dat.enums.ContentType;
 import org.dat.enums.MessageType;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -44,13 +46,13 @@ public interface ChatRepository extends JpaRepository<Chat, UUID> {
     @Query("select n from Chat n where n.deleted = false and n.receiverId = :groupId AND n.type = :type and n.contentType = :contentType order by n.createdDate")
     List<Chat> findImageHistoryChatByGroupId(@Param("groupId") UUID groupId, @Param("type") MessageType type, @Param("contentType") ContentType contentType);
 
-    @Query("SELECT c FROM Chat c WHERE ((c.senderId = :userId OR c.receiverId = :userId) AND c.type = :type) and c.deleted = false ")
+    @Query("SELECT c FROM Chat c WHERE c.deleted = false and ((c.senderId = :userId OR c.receiverId = :userId) AND c.type = :type) and c.deleted = false ")
     List<Chat> findBySenderIdOrReceiverIdAndType(
             @Param("userId") UUID userId,
             @Param("type") MessageType type
     );
 
-    @Query("SELECT c FROM Chat c WHERE ((c.senderId = :senderId AND c.receiverId = :receiverId) " +
+    @Query("SELECT c FROM Chat c WHERE c.deleted = false and ((c.senderId = :senderId AND c.receiverId = :receiverId) " +
             "OR (c.senderId = :receiverId AND c.receiverId = :senderId)) AND c.type = :type ORDER BY c.createdDate DESC LIMIT 1")
     Optional<Chat> findTopBySenderIdAndReceiverIdOrSenderIdAndReceiverIdAndTypeOrderByCreatedDateDesc(
             @Param("senderId") UUID senderId,
@@ -58,12 +60,17 @@ public interface ChatRepository extends JpaRepository<Chat, UUID> {
             @Param("type") MessageType type
     );
 
-    @Query("SELECT c FROM Chat c WHERE c.receiverId = :groupId AND c.type = :type ORDER BY c.createdDate DESC LIMIT 1")
+    @Query("SELECT c FROM Chat c WHERE c.receiverId = :groupId AND c.type = :type AND c.deleted = false ORDER BY c.createdDate DESC LIMIT 1")
     Optional<Chat> findTopByReceiverIdAndTypeOrderByCreatedDateDesc(
             @Param("groupId") UUID groupId,
             @Param("type") MessageType type
     );
 
     List<Chat> findAll(Specification<Chat> spec, Sort sortByCreatedDateDesc);
+
+    void deleteByIdAndSenderId(UUID id, UUID senderId);
+
+    @Query("select c from Chat c where c.senderId = :senderId and c.id = :id")
+    Optional<Chat> findBySenderIdAndId(@Param("senderId") UUID senderId,@Param("id") UUID id);
 }
 
