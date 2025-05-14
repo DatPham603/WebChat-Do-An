@@ -16,4 +16,5 @@ public class FriendDTO {
     private UUID friendId;
     private String friendName;
     private String friendEmail;
+    private Boolean confirmed;
 }

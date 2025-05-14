@@ -113,6 +113,7 @@ public class FriendService {
                 .friendName(friend.getFriendName())
                 .friendEmail(friend.getFriendEmail())
                 .userId(friend.getUserId())
+                .confirmed(friend.isConfirmed())
                 .build()).toList();
     }
 
@@ -139,5 +140,24 @@ public class FriendService {
             }
             friendRepository.save(friend);
         });
+    }
+
+    public boolean areFriends(UUID userId, UUID friendId) {
+//        if(friendRepository.findByUserIdAndFriendId(userId, friendId).isEmpty() ||
+//                friendRepository.findByUserIdAndFriendId(userId, friendId).isEmpty()) {
+//            return false;
+//        }
+        return friendRepository.existsByUserIdAndFriendIdAndConfirmedAndDeletedFalse(userId, friendId, true) ||
+                friendRepository.existsByUserIdAndFriendIdAndConfirmedAndDeletedFalse(friendId, userId, true);
+    }
+
+    public List<FriendDTO> searchAllUserFriends(UUID userId) {
+        List<Friend> friendsOfUser = friendRepository.findByUserIdAndConfirmedTrueAndDeletedFalse(userId);
+        return friendsOfUser.stream().map(friend -> FriendDTO.builder()
+                .friendId(friend.getFriendId())
+                .friendName(friend.getFriendName())
+                .friendEmail(friend.getFriendEmail())
+                .userId(friend.getUserId())
+                .build()).toList();
     }
 }

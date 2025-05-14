@@ -6,10 +6,7 @@ import org.dat.dto.request.LoginRequest;
 import org.dat.dto.request.RefreshTokenRequest;
 import org.dat.dto.request.RegisterRequest;
 import org.dat.dto.request.UpdateUserInforRequest;
-import org.dat.dto.response.JwtDTO;
-import org.dat.dto.response.Response;
-import org.dat.dto.response.UserAuthDTO;
-import org.dat.dto.response.UserDTO;
+import org.dat.dto.response.*;
 import org.dat.exception.UserExistedException;
 import org.dat.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +83,11 @@ public class UserController {
     @GetMapping("/get-users-by-ids")
     public Response<List<UserDTO>> getUsersByIds(@RequestParam("userIds") List<UUID> userIds){
         return Response.of(this.userService.getAllUsersById(userIds));
+    }
+
+    @GetMapping("/get-users-friends/{userId}")
+    public Response<List<UserFriendDTO>> getUsersFriends(@PathVariable("userId") UUID userId){
+        return Response.of(this.userService.getUsersFriends(userId));
     }
 
     @GetMapping("/validate")

@@ -69,6 +69,7 @@ public class ChatListService {
                             dto.setAvatar(user.getAvatar()); // Giả sử UserDTO có trường avatar
                             dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "No messages yet");
                             dto.setLastActive(lastMessage != null ? lastMessage.getCreatedDate() : null);
+                            dto.setConfirmed(friend.getConfirmed());
                             chatList.add(dto);
                         }
                     } catch (Exception e) {
@@ -97,6 +98,7 @@ public class ChatListService {
                 dto.setMemberCount((int) memberCount);
                 dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "No messages yet");
                 dto.setLastActive(lastMessage != null ? lastMessage.getCreatedDate() : null);
+                dto.setConfirmed(true);
                 chatList.add(dto);
             }
         }

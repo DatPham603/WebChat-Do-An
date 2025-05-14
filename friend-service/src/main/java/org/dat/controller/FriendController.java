@@ -52,4 +52,17 @@ public class FriendController {
             friendService.updateFriendEmails(userId, request.getEmail());
             return Response.ok();
         }
+
+    @GetMapping("/check")
+    public Response<Boolean> areFriends(
+            @RequestParam("userId") UUID userId,
+            @RequestParam("friendId") UUID friendId) {
+        boolean areFriends = friendService.areFriends(userId, friendId);
+        return Response.of(areFriends);
+    }
+
+    @GetMapping("/users/{userId}/findFriends")
+    public Response<List<FriendDTO>> findFriends(@PathVariable UUID userId) {
+        return Response.of(friendService.searchAllUserFriends(userId));
+    }
 }

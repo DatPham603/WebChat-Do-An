@@ -15,5 +15,6 @@ public class ChatListItemDTO {
     private Integer memberCount;
     private String lastMessage;
     private Instant lastActive;
+    private Boolean confirmed;
     // Các trường khác bạn có thể muốn thêm như unreadCount, v.v.
 }

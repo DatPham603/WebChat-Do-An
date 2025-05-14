@@ -2,9 +2,7 @@ package org.dat.service;
 
 import org.dat.config.JwtTokenUtils;
 import org.dat.dto.request.*;
-import org.dat.dto.response.JwtDTO;
-import org.dat.dto.response.UserAuthDTO;
-import org.dat.dto.response.UserDTO;
+import org.dat.dto.response.*;
 import org.dat.entity.*;
 import org.dat.enums.EnumRole;
 import org.dat.exception.UserExistedException;
@@ -23,9 +21,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -319,6 +320,36 @@ public class UserService {
                 .dateOfBirth(user.getDateOfBirth())
                 .build()).toList();
         return userDTOList;
+    }
+
+    public List<UserFriendDTO> getUsersFriends(UUID userId) {
+        // 1. Lấy danh sách TẤT CẢ người dùng TRỪ userId
+        List<User> allUsers = userRepository.findAll().stream()
+                .filter(user -> !user.getId().equals(userId))
+                .toList();
+
+        // 2. Lấy danh sách bạn bè của userId
+        List<FriendDTO> friendsOfUser = friendServiceClient.findFriends(userId).getData();
+        List<UUID> friendIds = friendsOfUser != null ? friendsOfUser.stream()
+                .map(FriendDTO::getFriendId)
+                .toList() : new ArrayList<>();
+
+        // 3. Xây dựng danh sách UserFriendDTO
+        List<UserFriendDTO> userFriendDTOList = new ArrayList<>();
+        for (User user : allUsers) {
+            UserFriendDTO userFriendDTO = UserFriendDTO.builder()
+                    .id(user.getId())
+                    .userName(user.getUsername())
+                    .email(user.getEmail())
+                    .avatar(user.getAvatar())
+                    .phoneNumber(user.getPhoneNumber())
+                    .address(user.getAddress())
+                    .dateOfBirth(user.getDateOfBirth())
+                    .isConfirmed(friendIds.contains(user.getId()))
+                    .build();
+            userFriendDTOList.add(userFriendDTO);
+        }
+        return userFriendDTOList;
     }
 
     public UserDTO getUserInforbyEmailOrPhoneNumber(String searchTerm) {
