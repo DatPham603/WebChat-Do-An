@@ -1,13 +1,11 @@
 package org.dat.repository;
 
-import jakarta.transaction.Transactional;
 import org.dat.entity.Chat;
 import org.dat.enums.ContentType;
 import org.dat.enums.MessageType;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
