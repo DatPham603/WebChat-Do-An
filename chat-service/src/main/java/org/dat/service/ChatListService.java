@@ -67,7 +67,7 @@ public class ChatListService {
                             dto.setName(user.getUserName());
                             dto.setEmail(user.getEmail());
                             dto.setAvatar(user.getAvatar()); // Giả sử UserDTO có trường avatar
-                            dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "No messages yet");
+                            dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "Chưa có tin nhắn nào!");
                             dto.setLastActive(lastMessage != null ? lastMessage.getCreatedDate() : null);
                             dto.setConfirmed(friend.getConfirmed());
                             chatList.add(dto);
@@ -96,7 +96,7 @@ public class ChatListService {
                 dto.setAvatar(group.getAvatar());
                 long memberCount = groupMemberRepository.countByGroupId(group.getId());
                 dto.setMemberCount((int) memberCount);
-                dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "No messages yet");
+                dto.setLastMessage(lastMessage != null ? lastMessage.getContent() : "Chưa có tin nhắn nào!");
                 dto.setLastActive(lastMessage != null ? lastMessage.getCreatedDate() : null);
                 dto.setConfirmed(true);
                 chatList.add(dto);
