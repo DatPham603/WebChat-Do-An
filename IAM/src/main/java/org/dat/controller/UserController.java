@@ -69,9 +69,9 @@ public class UserController {
     }
 
     @PostMapping("/logout-account")
-    public ResponseEntity<?> logout(@RequestHeader("authorization") String authorizationHeader,
+    public Response<?> logout(@RequestHeader("authorization") String authorizationHeader,
                                     @RequestParam("refresh_token") String refreshToken) {
-        return ResponseEntity.ok(userService.logout(authorizationHeader, refreshToken));
+        return Response.of(userService.logout(authorizationHeader, refreshToken));
     }
 
     @DeleteMapping("/soft-delete-user/{userId}")
