@@ -268,7 +268,11 @@ public class UserService {
         if (updateUserInforRequest.getDateOfBirth() != null) {
             existingUser.setDateOfBirth(updateUserInforRequest.getDateOfBirth());
         }
-        if(updateUserInforRequest.getEmail() != null && userRepository.existsByEmail(updateUserInforRequest.getEmail())) {
+        if (updateUserInforRequest.getEmail() != null) {
+            if (userRepository.existsByEmail(updateUserInforRequest.getEmail()) &&
+                    !existingUser.getEmail().equals(updateUserInforRequest.getEmail())) {
+                throw new IllegalArgumentException("Email đã được sử dụng bởi người dùng khác");
+            }
             existingUser.setEmail(updateUserInforRequest.getEmail());
         }
         userRepository.save(existingUser);
