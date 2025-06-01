@@ -1,9 +1,11 @@
 package org.dat.service;
 
 import org.dat.dto.response.FriendDTO;
+import org.dat.dto.response.FriendRequestDTO;
 import org.dat.dto.response.Response;
 import org.dat.dto.response.UserDTO;
 import org.dat.entity.Friend;
+import org.dat.enums.FriendRequestDirection;
 import org.dat.feignConfig.IAMServiceClient;
 import org.dat.repository.FriendRepository;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class FriendService {
                     .friendId(friendId)
                     .confirmed(false)
                     .deleted(false)
+                    .direction(FriendRequestDirection.SENT)
                     .userName(user.getData().getUserName())
                     .friendName(friend.getData().getUserName())
                     .email(user.getData().getEmail())
@@ -49,6 +52,7 @@ public class FriendService {
                     .friendId(userId)
                     .confirmed(false)
                     .deleted(false)
+                    .direction(FriendRequestDirection.RECEIVED)
                     .userName(friend.getData().getUserName())
                     .friendName(user.getData().getUserName())
                     .email(friend.getData().getEmail())
@@ -113,6 +117,7 @@ public class FriendService {
                 .friendName(friend.getFriendName())
                 .friendEmail(friend.getFriendEmail())
                 .userId(friend.getUserId())
+                .confirmed(friend.isConfirmed())
                 .build()).toList();
     }
 
@@ -129,6 +134,25 @@ public class FriendService {
         });
     }
 
+    public List<FriendRequestDTO> getFriendRequests(UUID receiverId) {
+        List<Friend> friendRequests = friendRepository.findByUserIdAndDirectionAndConfirmedFalseAndDeletedFalse(
+                receiverId, FriendRequestDirection.RECEIVED);
+
+        return friendRequests.stream()
+                .map(request -> {
+                    UserDTO sender = iamServiceClient.getUserInforbyUserId(request.getFriendId()).getData();
+                    return FriendRequestDTO.builder()
+                            .receiverId(request.getUserId())
+                            .senderId(request.getFriendId())
+                            .senderName(request.getFriendName())
+                            .senderEmail(request.getFriendEmail())
+                            .senderAvatar(sender.getAvatar())
+                            .requestId(request.getId())
+                            .build();
+                })
+                .toList();
+    }
+
     public void updateFriendEmails(UUID userId, String email) {
         List<Friend> friends = friendRepository.findUser(userId);
         friends.forEach(friend -> {
@@ -139,5 +163,24 @@ public class FriendService {
             }
             friendRepository.save(friend);
         });
+    }
+
+    public boolean areFriends(UUID userId, UUID friendId) {
+        if(friendRepository.findByUserIdAndFriendId(userId, friendId).isEmpty() ||
+                friendRepository.findByUserIdAndFriendId(userId, friendId).isEmpty()) {
+            return false;
+        }
+        return friendRepository.existsByUserIdAndFriendIdAndConfirmedAndDeletedFalse(userId, friendId, true) ||
+                friendRepository.existsByUserIdAndFriendIdAndConfirmedAndDeletedFalse(friendId, userId, true);
+    }
+
+    public List<FriendDTO> searchAllUserFriends(UUID userId) {
+        List<Friend> friendsOfUser = friendRepository.findByUserIdAndConfirmedTrueAndDeletedFalse(userId);
+        return friendsOfUser.stream().map(friend -> FriendDTO.builder()
+                .friendId(friend.getFriendId())
+                .friendName(friend.getFriendName())
+                .friendEmail(friend.getFriendEmail())
+                .userId(friend.getUserId())
+                .build()).toList();
     }
 }

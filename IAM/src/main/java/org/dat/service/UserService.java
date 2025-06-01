@@ -2,9 +2,7 @@ package org.dat.service;
 
 import org.dat.config.JwtTokenUtils;
 import org.dat.dto.request.*;
-import org.dat.dto.response.JwtDTO;
-import org.dat.dto.response.UserAuthDTO;
-import org.dat.dto.response.UserDTO;
+import org.dat.dto.response.*;
 import org.dat.entity.*;
 import org.dat.enums.EnumRole;
 import org.dat.exception.UserExistedException;
@@ -23,9 +21,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -267,7 +268,11 @@ public class UserService {
         if (updateUserInforRequest.getDateOfBirth() != null) {
             existingUser.setDateOfBirth(updateUserInforRequest.getDateOfBirth());
         }
-        if(updateUserInforRequest.getEmail() != null && userRepository.existsByEmail(updateUserInforRequest.getEmail())) {
+        if (updateUserInforRequest.getEmail() != null) {
+            if (userRepository.existsByEmail(updateUserInforRequest.getEmail()) &&
+                    !existingUser.getEmail().equals(updateUserInforRequest.getEmail())) {
+                throw new IllegalArgumentException("Email đã được sử dụng bởi người dùng khác");
+            }
             existingUser.setEmail(updateUserInforRequest.getEmail());
         }
         userRepository.save(existingUser);
@@ -319,6 +324,69 @@ public class UserService {
                 .dateOfBirth(user.getDateOfBirth())
                 .build()).toList();
         return userDTOList;
+    }
+
+    public List<UserFriendDTO> getUsersFriends(UUID userId) {
+        // 1. Lấy danh sách TẤT CẢ người dùng TRỪ userId
+        List<User> allUsers = userRepository.findAll().stream()
+                .filter(user -> !user.getId().equals(userId))
+                .toList();
+
+        // 2. Lấy danh sách bạn bè của userId
+        List<FriendDTO> friendsOfUser = friendServiceClient.findFriends(userId).getData();
+        List<UUID> friendIds = friendsOfUser != null ? friendsOfUser.stream()
+                .map(FriendDTO::getFriendId)
+                .toList() : new ArrayList<>();
+
+        // 3. Xây dựng danh sách UserFriendDTO
+        List<UserFriendDTO> userFriendDTOList = new ArrayList<>();
+        for (User user : allUsers) {
+            UserFriendDTO userFriendDTO = UserFriendDTO.builder()
+                    .id(user.getId())
+                    .userName(user.getUsername())
+                    .email(user.getEmail())
+                    .avatar(user.getAvatar())
+                    .phoneNumber(user.getPhoneNumber())
+                    .address(user.getAddress())
+                    .dateOfBirth(user.getDateOfBirth())
+                    .isConfirmed(friendIds.contains(user.getId()))
+                    .build();
+            userFriendDTOList.add(userFriendDTO);
+        }
+        return userFriendDTOList;
+    }
+
+    public UserDTO getUserInforbyEmailOrPhoneNumber(String searchTerm) {
+        User user = userRepository.findBySearchTerm(searchTerm).orElseThrow(() ->
+                new RuntimeException("User not found"));
+
+        List<RoleUser> roleUsers = roleUserRepository.findAllByUserId(user.getId());
+        if (roleUsers.isEmpty()) {
+            throw new RuntimeException("User has no roles assigned");
+        }
+        List<Role> roles = roleUsers.stream()
+                .map(roleUser -> roleRepository.findById(roleUser.getRoleId())
+                        .orElseThrow(() -> new RuntimeException("Can't find role")))
+                .toList();
+        List<String> roleNames = roles.stream()
+                .map(Role::getCode)
+                .toList();
+
+        List<String> permissionDescriptions = enrichPermissions(
+                roles.stream().map(Role::getId).toList()
+        );
+
+        return UserDTO.builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .phoneNumber(user.getPhoneNumber())
+                .dateOfBirth(user.getDateOfBirth())
+                .roleName(roleNames)
+                .perDescription(permissionDescriptions)
+                .build();
     }
 
     public String logout(String accessToken, String refreshToken) {

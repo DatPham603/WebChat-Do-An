@@ -6,10 +6,7 @@ import org.dat.dto.request.LoginRequest;
 import org.dat.dto.request.RefreshTokenRequest;
 import org.dat.dto.request.RegisterRequest;
 import org.dat.dto.request.UpdateUserInforRequest;
-import org.dat.dto.response.JwtDTO;
-import org.dat.dto.response.Response;
-import org.dat.dto.response.UserAuthDTO;
-import org.dat.dto.response.UserDTO;
+import org.dat.dto.response.*;
 import org.dat.exception.UserExistedException;
 import org.dat.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +37,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-//    @PreAuthorize("hasPermission('Document','DELETE')")
     public Response<UserDTO> getUserById(@PathVariable("userId") UUID userId) {
         return Response.of(userService.getUserInfor(userId));
+    }
+
+    @GetMapping("auto-complete")
+    public Response<UserDTO> getUserByEmailOrPhoneNumber(@RequestParam("searchTerm") String searchTerm) {
+        return Response.of(userService.getUserInforbyEmailOrPhoneNumber(searchTerm));
     }
 
     @GetMapping("find-by-email/{email}")
@@ -68,9 +69,9 @@ public class UserController {
     }
 
     @PostMapping("/logout-account")
-    public ResponseEntity<?> logout(@RequestHeader("authorization") String authorizationHeader,
+    public Response<?> logout(@RequestHeader("authorization") String authorizationHeader,
                                     @RequestParam("refresh_token") String refreshToken) {
-        return ResponseEntity.ok(userService.logout(authorizationHeader, refreshToken));
+        return Response.of(userService.logout(authorizationHeader, refreshToken));
     }
 
     @DeleteMapping("/soft-delete-user/{userId}")
@@ -82,6 +83,11 @@ public class UserController {
     @GetMapping("/get-users-by-ids")
     public Response<List<UserDTO>> getUsersByIds(@RequestParam("userIds") List<UUID> userIds){
         return Response.of(this.userService.getAllUsersById(userIds));
+    }
+
+    @GetMapping("/get-users-friends/{userId}")
+    public Response<List<UserFriendDTO>> getUsersFriends(@PathVariable("userId") UUID userId){
+        return Response.of(this.userService.getUsersFriends(userId));
     }
 
     @GetMapping("/validate")

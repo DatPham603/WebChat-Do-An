@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.dat.dto.request.UpdateEmailRequest;
 import org.dat.dto.request.UpdateNameRequest;
 import org.dat.dto.response.FriendDTO;
+import org.dat.dto.response.FriendRequestDTO;
 import org.dat.dto.response.Response;
 import org.dat.service.FriendService;
 import org.springframework.web.bind.annotation.*;
@@ -52,4 +53,22 @@ public class FriendController {
             friendService.updateFriendEmails(userId, request.getEmail());
             return Response.ok();
         }
+
+    @GetMapping("/check")
+    public Response<Boolean> areFriends(
+            @RequestParam("userId") UUID userId,
+            @RequestParam("friendId") UUID friendId) {
+        boolean areFriends = friendService.areFriends(userId, friendId);
+        return Response.of(areFriends);
+    }
+
+    @GetMapping("/users/{userId}/findFriends")
+    public Response<List<FriendDTO>> findFriends(@PathVariable UUID userId) {
+        return Response.of(friendService.searchAllUserFriends(userId));
+    }
+
+    @GetMapping("/requests-list/{userId}")
+    public Response<List<FriendRequestDTO>> getFriendRequests(@PathVariable UUID userId) {
+        return Response.of(friendService.getFriendRequests(userId));
+    }
 }

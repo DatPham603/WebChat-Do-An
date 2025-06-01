@@ -1,5 +1,6 @@
 package org.dat.service;
 
+import jakarta.transaction.Transactional;
 import org.dat.dto.dto.ChatDTO;
 import org.dat.entity.Chat;
 import org.dat.enums.ContentType;
@@ -8,6 +9,7 @@ import org.dat.repository.ChatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,16 @@ public class ChatService {
                 .contentType(chat.getContentType())
                 .deleted(chat.getDeleted())
                 .build()).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public String deleteMessageBySenderId(UUID senderId,UUID messageId ) {
+        Optional<Chat> chat = chatRepository.findBySenderIdAndId(senderId, messageId);
+        if(chat.isPresent()) {
+            chatRepository.delete(chat.get());
+            return "Delete successfully";
+        }
+        return "Delete failed";
     }
 
     public List<ChatDTO> getImageChatHistory(UUID userId, UUID receiverId) {
@@ -112,4 +124,6 @@ public class ChatService {
                 .deleted(chat.getDeleted())
                 .build()).collect(Collectors.toList());
     }
+
+
 }

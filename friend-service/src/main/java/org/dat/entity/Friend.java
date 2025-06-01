@@ -2,6 +2,7 @@ package org.dat.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.dat.enums.FriendRequestDirection;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.UUID;
@@ -35,4 +36,7 @@ public class Friend extends Auditable {
     private boolean confirmed;
     @Column(name = "deleted")
     private boolean deleted;
+    @Column(name = "direction")
+    @Enumerated(EnumType.STRING)
+    private FriendRequestDirection direction;
 }
