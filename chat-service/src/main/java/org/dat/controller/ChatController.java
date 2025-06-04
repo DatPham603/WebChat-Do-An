@@ -13,9 +13,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.Map;
@@ -51,6 +48,28 @@ public class ChatController {
                     "/queue/messages", // hoặc "/queue/reply"
                     chatMessage
             );
+        }
+    }
+
+    @MessageMapping("/webrtc.callended")
+    public void handleCallEnded(@Payload Map<String, Object> payload, Principal principal) {
+        try {
+            String receiverId = (String) payload.get("receiverId");
+            String callerId = (String) payload.get("callerId");
+
+            log.info("Handling call ended from {} to {}", callerId, receiverId);
+
+            Map<String, Object> callEndedPayload = Map.of(
+                    "callerId", callerId
+            );
+
+            messagingTemplate.convertAndSendToUser(
+                    receiverId,
+                    "/queue/webrtc/callended",
+                    callEndedPayload
+            );
+        } catch (Exception e) {
+            log.error("Error handling call ended: ", e);
         }
     }
 
